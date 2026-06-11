@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>INA-PREDICT | Donasi Bencana - Kirim Bukti ke WhatsApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+        body { 
+            font-family: 'Space Grotesk', 'Inter', sans-serif; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            min-height: 100vh;
+            font-size: 15px;
+            line-height: 1.55;
+        }
+        
+        body.dark { background: #0a0f0d; color: #e2e8e4; }
+        body.dark .bg-gradient { background: radial-gradient(circle at 30% 20%, #0a1a12, #020504); }
+        body.dark .sidebar { background: rgba(6, 12, 10, 0.97); border-right-color: rgba(43, 110, 78, 0.4); backdrop-filter: blur(20px); }
+        body.dark .glass-card, body.dark .info-card, body.dark .disaster-card, body.dark .top-bar,
+        body.dark .modal-content, body.dark .stat-card, body.dark .donor-item, body.dark .bank-card,
+        body.dark .upload-area { 
+            background: rgba(18, 28, 23, 0.94); 
+            border-color: rgba(43, 110, 78, 0.3); 
+        }
+        body.dark .nav-link { color: #b8d5c8; }
+        body.dark .nav-link:hover, body.dark .nav-link.active { background: rgba(43, 110, 78, 0.12); color: #3d9b6d !important; }
+        body.dark .input-field, body.dark .bank-select { background: rgba(0,0,0,0.4); border-color: rgba(43,110,78,0.3); color: #e2e8e4; }
+        body.dark .upload-area { border-color: rgba(43,110,78,0.4); background: rgba(43,110,78,0.05); }
+        
+        body.light { background: #f0f4f1; color: #1a2c24; }
+        body.light .bg-gradient { background: radial-gradient(circle at 30% 20%, #e2ece6, #d3e0d8); }
+        body.light .sidebar { background: rgba(255, 255, 255, 0.97); border-right-color: rgba(43, 110, 78, 0.2); }
+        body.light .glass-card, body.light .info-card, body.light .disaster-card, body.light .top-bar,
+        body.light .modal-content, body.light .stat-card, body.light .donor-item, body.light .upload-area { 
+            background: rgba(255, 255, 255, 0.94); 
+            border-color: rgba(43, 110, 78, 0.15); 
+        }
+        body.light .input-field, body.light .bank-select { background: #f8f9f8; border-color: rgba(43, 110, 78, 0.2); color: #1a2c24; }
+        body.light .upload-area { border-color: rgba(43,110,78,0.3); background: rgba(43,110,78,0.03); }
+        
+        .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(43, 110, 78, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 10px; }
+        
+        .sidebar { width: 280px; padding: 32px 24px; position: fixed; height: 100vh; overflow-y: auto; z-index: 20; border-right: 1px solid; transition: all 0.3s ease; }
+        .logo { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
+        .logo-icon { width: 52px; height: 52px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; box-shadow: 0 8px 20px rgba(43,110,78,0.3); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .logo-text { font-size: 1.4rem; font-weight: 800; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logo-small { font-size: 0.6rem; opacity: 0.65; letter-spacing: 1.5px; margin-top: 4px; }
+        .nav-item { margin: 12px 0; }
+        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 14px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { background: rgba(43, 110, 78, 0.12); transform: translateX(4px); border-left-color: #2b6e4e; }
+        
+        .theme-toggle { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding: 12px 18px; background: rgba(43, 110, 78, 0.12); border-radius: 50px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
+        .update-time { margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(43, 110, 78, 0.2); font-size: 0.6rem; text-align: center; opacity: 0.7; }
+        
+        .main-content { margin-left: 280px; padding: 32px 40px; transition: all 0.3s; }
+        
+        .top-bar { backdrop-filter: blur(16px); border-radius: 32px; padding: 24px 36px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 24px; border: 1px solid; }
+        .top-bar h2 { font-size: 1.4rem; font-weight: 800; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .top-bar p { margin-top: 8px; font-size: 0.85rem; opacity: 0.8; }
+        .alert-status { background: linear-gradient(135deg, #2b6e4e, rgba(43, 110, 78, 0.5)); color: white; padding: 14px 36px; border-radius: 60px; font-size: 0.85rem; font-weight: 600; cursor: pointer; animation: pulse 2s infinite; border: none; }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(43, 110, 78, 0.5); } 50% { box-shadow: 0 0 0 12px rgba(43, 110, 78, 0); } }
+        
+        .hero-section { border-radius: 36px; padding: 42px 36px; margin-bottom: 40px; text-align: center; border: 1px solid rgba(43, 110, 78, 0.3); background: linear-gradient(135deg, rgba(43, 110, 78, 0.15), rgba(43, 110, 78, 0.03)); }
+        .hero-section h1 { font-size: 2rem; margin-bottom: 18px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .hero-section p { font-size: 0.95rem; opacity: 0.85; }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-bottom: 40px; }
+        .stat-card { backdrop-filter: blur(12px); border-radius: 32px; padding: 28px 20px; text-align: center; border: 1px solid; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(43,110,78,0.1), transparent); transition: left 0.5s; }
+        .stat-card:hover::before { left: 100%; }
+        .stat-card:hover { transform: translateY(-6px); border-color: #2b6e4e; }
+        .stat-icon { font-size: 2.2rem; margin-bottom: 14px; color: #2b6e4e; }
+        .stat-value { font-size: 1.6rem; font-weight: 800; margin: 10px 0; }
+        .stat-label { font-size: 0.7rem; opacity: 0.75; margin-top: 8px; letter-spacing: 0.5px; }
+        
+        /* JARAK BENCANA CARD KE FORM - DIPERBESAR */
+        .disaster-grid-wrapper { margin-bottom: 48px; }
+        .disaster-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; margin-bottom: 0; }
+        .disaster-card { border-radius: 28px; padding: 22px 14px; transition: all 0.3s ease; cursor: pointer; border: 1px solid rgba(43,110,78,0.2); text-align: center; position: relative; overflow: hidden; }
+        .disaster-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 3px; background: #2b6e4e; transition: width 0.3s; }
+        .disaster-card:hover::after { width: 100%; }
+        .disaster-card:hover { transform: translateY(-6px); border-color: #2b6e4e; background: rgba(43,110,78,0.08); }
+        .disaster-card.selected { border: 2px solid #2b6e4e; background: rgba(43,110,78,0.12); box-shadow: 0 8px 25px rgba(43,110,78,0.2); }
+        .disaster-icon { width: 60px; height: 60px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 16px; transition: transform 0.2s; }
+        .disaster-card:hover .disaster-icon { transform: scale(1.05); }
+        .disaster-card h3 { font-size: 0.95rem; margin-bottom: 8px; font-weight: 800; }
+        .location { font-size: 0.6rem; opacity: 0.7; margin-bottom: 14px; }
+        .progress-bar { height: 6px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; margin: 14px 0; }
+        .progress-fill { height: 100%; border-radius: 10px; transition: width 0.3s ease; }
+        .disaster-stats { font-size: 0.65rem; margin-top: 12px; }
+        .collected { font-weight: 800; color: #2b6e4e; }
+        
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+        .glass-card { backdrop-filter: blur(12px); border-radius: 36px; border: 1px solid; padding: 32px; transition: 0.3s; position: relative; }
+        .glass-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; border-bottom: 2px solid rgba(43, 110, 78, 0.2); padding-bottom: 18px; flex-wrap: wrap; gap: 12px; }
+        .card-header h3 { font-size: 1.05rem; display: flex; align-items: center; gap: 10px; font-weight: 800; color: #2b6e4e; }
+        
+        .selected-disaster-card { background: rgba(43,110,78,0.12); border-radius: 22px; padding: 20px; margin-bottom: 28px; text-align: center; border-left: 4px solid #2b6e4e; animation: fadeInUp 0.3s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; font-size: 0.7rem; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.3px; }
+        .input-field, .bank-select { width: 100%; padding: 14px 18px; border-radius: 18px; border: 1px solid; font-size: 0.85rem; outline: none; font-family: inherit; transition: 0.2s; }
+        .input-field:focus, .bank-select:focus { border-color: #2b6e4e; box-shadow: 0 0 0 3px rgba(43,110,78,0.2); transform: scale(1.01); }
+        .nominal-buttons { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+        .nominal-btn { background: rgba(43,110,78,0.1); border: 1px solid rgba(43,110,78,0.3); padding: 10px 22px; border-radius: 40px; cursor: pointer; font-weight: 600; font-size: 0.75rem; transition: 0.2s; }
+        .nominal-btn:hover, .nominal-btn.active { background: #2b6e4e; color: white; border-color: #2b6e4e; transform: scale(0.96); }
+        
+        .upload-area { border: 2px dashed; border-radius: 26px; padding: 32px 24px; text-align: center; cursor: pointer; transition: 0.2s; margin-bottom: 24px; }
+        .upload-area:hover { border-color: #2b6e4e; background: rgba(43,110,78,0.05); transform: scale(0.99); }
+        .upload-area i { font-size: 2.4rem; margin-bottom: 14px; opacity: 0.6; transition: transform 0.2s; }
+        .upload-area:hover i { transform: translateY(-4px); }
+        .upload-area p { font-size: 0.75rem; margin-top: 8px; }
+        .file-preview { margin-top: 18px; padding: 14px; border-radius: 18px; display: flex; align-items: center; gap: 14px; justify-content: space-between; flex-wrap: wrap; animation: fadeIn 0.2s; background: rgba(0,0,0,0.05); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .file-preview img { width: 75px; height: 75px; object-fit: cover; border-radius: 14px; }
+        .file-name { font-size: 0.7rem; flex: 1; word-break: break-all; }
+        .remove-file { background: rgba(200,80,60,0.2); color: #e07a5f; border: none; padding: 6px 14px; border-radius: 25px; cursor: pointer; font-size: 0.65rem; transition: 0.2s; }
+        .remove-file:hover { background: rgba(200,80,60,0.4); transform: scale(0.95); }
+        
+        .btn-donate { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); color: white; padding: 18px; border-radius: 60px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; border: none; width: 100%; position: relative; overflow: hidden; margin-top: 12px; }
+        .btn-donate::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s; }
+        .btn-donate:hover::before { left: 100%; }
+        .btn-donate:hover { transform: scale(0.98); opacity: 0.95; box-shadow: 0 10px 25px rgba(43,110,78,0.4); }
+        .btn-donate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        
+        .bank-info-card { background: rgba(43,110,78,0.08); border-radius: 22px; padding: 24px; margin-top: 28px; text-align: center; transition: 0.2s; }
+        .bank-info-card:hover { transform: translateY(-3px); background: rgba(43,110,78,0.12); }
+        .bank-info-card .selected-bank-detail { font-size: 1.25rem; font-weight: 800; color: rgba(43, 110, 78, 0.5); margin: 12px 0; }
+        .copy-bank-btn { background: rgba(43,110,78,0.15); border: 1px solid rgba(43,110,78,0.3); padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; font-size: 0.75rem; margin-top: 14px; transition: 0.2s; }
+        .copy-bank-btn:hover { background: #2b6e4e; color: white; transform: scale(0.96); }
+        
+        .info-card { border-radius: 20px; padding: 18px; margin-top: 24px; border-left: 4px solid rgba(43, 110, 78, 0.5); background: rgba(43, 110, 78, 0.08); }
+        .info-card p { font-size: 0.65rem; margin: 8px 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        
+        .donor-section { margin-top: 40px; display: none; }
+        .donor-section.visible { display: block; animation: slideUp 0.4s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+        .donor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; max-height: 500px; overflow-y: auto; padding-right: 8px; margin-top: 10px; }
+        .donor-item { border-radius: 22px; padding: 20px; border: 1px solid rgba(43,110,78,0.12); transition: 0.2s; display: flex; align-items: center; gap: 18px; }
+        .donor-item:hover { background: rgba(43,110,78,0.06); transform: translateX(5px); }
+        .donor-avatar { width: 56px; height: 56px; background: linear-gradient(135deg, #2b6e4e20, #3d9b6d20); border-radius: 56px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: #2b6e4e; flex-shrink: 0; transition: 0.2s; }
+        .donor-item:hover .donor-avatar { transform: scale(1.05); background: linear-gradient(135deg, #2b6e4e40, #3d9b6d40); }
+        .donor-info { flex: 1; }
+        .donor-name { font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+        .donor-date { font-size: 0.55rem; opacity: 0.6; margin-top: 4px; }
+        .donor-message { font-size: 0.6rem; opacity: 0.7; margin-top: 6px; font-style: italic; }
+        .donor-amount { font-weight: 800; font-size: 0.95rem; color: rgba(43, 110, 78, 0.5); text-align: right; flex-shrink: 0; }
+        .disaster-badge { font-size: 0.55rem; background: rgba(43,110,78,0.15); padding: 3px 12px; border-radius: 30px; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(24px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { border-radius: 48px; max-width: 540px; width: 90%; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(43, 110, 78, 0.4); animation: modalPop 0.3s ease; }
+        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { padding: 30px 34px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(43, 110, 78, 0.25); }
+        .modal-header h3 { font-size: 1.4rem; font-weight: 800; color: rgba(43, 110, 78, 0.5); }
+        .close-modal { cursor: pointer; font-size: 1.6rem; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
+        .close-modal:hover { background: rgba(43, 110, 78, 0.15); transform: rotate(90deg); }
+        .modal-body { padding: 32px; }
+        .detail-card { border-radius: 32px; padding: 24px; margin-bottom: 20px; background: rgba(0,0,0,0.04); line-height: 1.7; font-size: 0.9rem; }
+        .btn-modal { padding: 18px; border-radius: 60px; width: 100%; cursor: pointer; font-weight: 700; border: none; margin-top: 14px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); color: white; transition: 0.2s; }
+        .btn-modal:hover { transform: scale(0.98); opacity: 0.9; }
+        
+        .toast { position: fixed; bottom: 30px; left: 30px; backdrop-filter: blur(20px); padding: 16px 30px; border-radius: 60px; z-index: 200; animation: slideInLeft 0.3s ease; border-left: 5px solid #2b6e4e; font-size: 0.85rem; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        @keyframes slideInLeft { from { transform: translateX(-120px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        .spinner { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; display: inline-block; margin-right: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @media (max-width: 1200px) { .disaster-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 1000px) { .disaster-grid { grid-template-columns: repeat(3, 1fr); } .two-columns { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { 
+            .sidebar { width: 80px; padding: 24px 12px; } 
+            .logo-text, .logo-small, .nav-link span, .theme-toggle span { display: none; } 
+            .logo-icon { margin: 0 auto; transform: scale(0.9); } 
+            .nav-link { justify-content: center; padding: 12px; } 
+            .nav-link i { font-size: 1.3rem; } 
+            .theme-toggle { justify-content: center; padding: 12px; } 
+            .main-content { margin-left: 80px; padding: 20px 24px; } 
+            .top-bar { flex-direction: column; text-align: center; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .disaster-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-section h1 { font-size: 1.4rem; }
+        }
+        @media (max-width: 500px) { .disaster-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr; } }
+        /* ===== SIDEBAR WARNA SAMA ===== */
+
+        .nav-link {
+            color: #2b6e4e !important;
+        }
+
+        .nav-link i {
+            color: #2b6e4e !important;
+        }
+
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(0,184,107,0.15) !important;
+            color: #2b6e4e !important;
+            border-left-color: #2b6e4e!important;
+        }
+
+
+        .nav-link.active i {
+            color: #007A4D !important;
+        }
+
+
+        /* teks Hubungi Kami yang biru */
+        .nav-link[href="hubungikami.html"] {
+            color: #2b6e4e !important;
+        }
+
+        .nav-link[href="hubungi.html"] i {
+            color: #2b6e4e !important;
+        }  
+    </style>
+    
+</head>
+<body class="dark">
+<div class="bg-gradient"></div>
+
+<div style="display: flex; min-height: 100vh;">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-haltered"></i></div>
+            <div>
+                <div class="logo-text">INA-PREDICT</div>
+                <div class="logo-small">EARLY WARNING SYSTEM</div>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="prediksi.html"><i class="fas fa-chart-line"></i><span>Prediksi Bencana</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="panduan.html"><i class="fas fa-hand-holding-heart"></i><span>Panduan Aksi</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="kontak.html"><i class="fas fa-phone-alt"></i><span>Kontak Darurat</span></a></div>
+            <div class="nav-item"><a class="nav-link active" href="donasi.html"><i class="fas fa-hand-holding-usd"></i><span>Donasi</span></a></div>
+            <div class="nav-item"><a class="nav-link active" href="chatbot.html"><i class="fas fa-robot"></i><span>INA-BOT AI</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="hubungikami.html"><i class="fas fa-envelope"></i><span>Hubungi Kami</span></a></div>
+        </div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-sun"></i>
+            <span>Dark / Light Mode</span>
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="update-time"><i class="fas fa-clock"></i> Update: <span id="lastUpdate"></span><br>Data BNPB - BMKG - BPBD</div>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div>
+                <h2><i class="fas fa-hand-holding-usd"></i> DONASI BENCANA INDONESIA</h2>
+                <p>Salurkan bantuan + upload bukti transfer ke WhatsApp Admin</p>
+            </div>
+            <div class="alert-status" onclick="showToast('🙏 Terima kasih atas kepedulian Anda!')">
+                <i class="fab fa-whatsapp"></i> KIRIM BUKTI KE WA
+            </div>
+        </div>
+
+        <div class="hero-section">
+            <h1><i class="fas fa-hands-helping"></i> BANTU KORBAN BENCANA</h1>
+            <p>Pilih bank tujuan, transfer, lalu upload bukti + isi form</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card" onclick="showDetail('Total Dana Terkumpul', 'Total dana yang telah berhasil dikumpulkan dari seluruh donatur.')">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-value" id="totalDonasi">Rp 0</div>
+                <div class="stat-label">Total Terkumpul</div>
+            </div>
+            <div class="stat-card" onclick="showDetail('Jumlah Donatur', 'Jumlah orang yang telah berdonasi.')">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-value" id="totalDonatur">0</div>
+                <div class="stat-label">Donatur</div>
+            </div>
+            <div class="stat-card" onclick="showDetail('Donasi Hari Ini', 'Total donasi yang masuk hari ini.')">
+                <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+                <div class="stat-value" id="donasiHariIni">Rp 0</div>
+                <div class="stat-label">Hari Ini</div>
+            </div>
+            <div class="stat-card" onclick="showDetail('Bencana Aktif', 'Bencana yang sedang dalam penanganan.')">
+                <div class="stat-icon"><i class="fas fa-mountain"></i></div>
+                <div class="stat-value">5</div>
+                <div class="stat-label">Bencana Aktif</div>
+            </div>
+        </div>
+
+        <!-- WRAPPER UNTUK JARAK BENCANA CARD -->
+        <div class="disaster-grid-wrapper">
+            <div class="glass-card" style="margin-bottom: 0;">
+                <div class="card-header">
+                    <h3><i class="fas fa-mountain"></i> 🌋 PILIH BENCANA YANG AKAN DIBANTU</h3>
+                    <span style="font-size:0.55rem;">Klik salah satu kartu untuk memilih</span>
+                </div>
+                <div class="disaster-grid" id="disasterGrid"></div>
+            </div>
+        </div>
+
+        <div class="two-columns">
+            <div class="glass-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-hand-holding-heart"></i> FORM DONASI + UPLOAD BUKTI</h3>
+                </div>
+                
+                <div id="selectedDisasterCard" class="selected-disaster-card" style="display: none;">
+                    <i class="fas fa-check-circle" style="color:#2b6e4e; font-size: 1.2rem;"></i>
+                    <h4 id="selectedDisasterName" style="margin: 10px 0 6px;">-</h4>
+                    <p id="selectedDisasterLocation" style="font-size: 0.75rem;"></p>
+                    <div id="selectedDisasterProgress" style="font-size:0.7rem; margin-top:10px;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Nama Lengkap *</label>
+                    <input type="text" id="donorName" class="input-field" placeholder="Nama Anda" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email *</label>
+                    <input type="email" id="donorEmail" class="input-field" placeholder="Email untuk konfirmasi" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fab fa-whatsapp"></i> WhatsApp (untuk konfirmasi) *</label>
+                    <input type="tel" id="donorPhone" class="input-field" placeholder="Contoh: 6281234567890" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-money-bill-wave"></i> Nominal Donasi *</label>
+                    <div class="nominal-buttons">
+                        <button type="button" class="nominal-btn" data-nominal="50000">Rp 50K</button>
+                        <button type="button" class="nominal-btn" data-nominal="100000">Rp 100K</button>
+                        <button type="button" class="nominal-btn" data-nominal="250000">Rp 250K</button>
+                        <button type="button" class="nominal-btn" data-nominal="500000">Rp 500K</button>
+                        <button type="button" class="nominal-btn" data-nominal="1000000">Rp 1JT</button>
+                    </div>
+                    <input type="number" id="donorAmount" class="input-field" placeholder="Atau masukkan nominal lain" min="10000" step="10000">
+                </div>
+                
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p><strong>Klik untuk upload bukti transfer</strong></p>
+                    <p style="font-size:0.6rem;">Format: JPG, PNG (max 5MB)</p>
+                </div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" style="display: none;" onchange="handleFileSelect(event)">
+                <div id="filePreview" class="file-preview" style="display: none;"></div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-comment"></i> Pesan & Doa (opsional)</label>
+                    <textarea id="donorMessage" class="input-field" rows="2" placeholder="Tulis pesan dukungan untuk korban..."></textarea>
+                </div>
+                <div id="selectedDisasterInfo" style="background: rgba(43,110,78,0.1); padding: 16px; border-radius: 18px; margin-bottom: 24px; font-size:0.7rem; text-align:center;">
+                    <i class="fas fa-info-circle"></i> ⚡ Klik kartu bencana di atas untuk memilih
+                </div>
+                <button class="btn-donate" id="donateBtn" onclick="processDonationWithImage()"><i class="fab fa-whatsapp"></i> DONASI & KIRIM BUKTI KE WA</button>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-university"></i> PILIH BANK TUJUAN</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-building-columns"></i> Pilih Bank untuk Transfer *</label>
+                    <select id="bankSelect" class="bank-select" onchange="updateSelectedBank()">
+                        <option value="">-- Pilih Bank Tujuan --</option>
+                        <option value="BCA">BCA - 1234567890 a.n. Yayasan Bencana Indonesia</option>
+                        <option value="MANDIRI">MANDIRI - 1234567890123 a.n. Yayasan Bencana Indonesia</option>
+                        <option value="BRI">BRI - 123456789012345 a.n. Yayasan Bencana Indonesia</option>
+                    </select>
+                </div>
+                
+                <div id="bankDetailCard" class="bank-info-card" style="display: none;">
+                    <i class="fas fa-building-columns" style="font-size: 2rem;"></i>
+                    <div class="selected-bank-detail" id="selectedBankName">-</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; letter-spacing: 1px;" id="selectedBankNumber">-</div>
+                    <div style="font-size: 0.7rem; opacity: 0.7;">a.n. Yayasan Bencana Indonesia</div>
+                    <button class="copy-bank-btn" onclick="copySelectedBank()"><i class="fas fa-copy"></i> Salin Nomor Rekening</button>
+                </div>
+                
+                <div class="info-card">
+                    <p><i class="fab fa-whatsapp"></i> <strong>Setelah Transfer:</strong> Upload bukti di form kiri</p>
+                    <p><i class="fas fa-clock"></i> Konfirmasi dalam 1x24 jam via WhatsApp</p>
+                    <p><i class="fas fa-shield-alt"></i> Donasi dikelola Yayasan Bencana Indonesia</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="donorSection" class="donor-section glass-card">
+            <div class="card-header">
+                <h3><i class="fas fa-list-ul"></i> 📋 DAFTAR DONATUR (TRANSPARAN)</h3>
+                <span style="font-size:0.6rem;">Update real-time | Total <span id="donorCountDisplay">0</span> donatur</span>
+            </div>
+            <div id="donorList" class="donor-grid"></div>
+        </div>
+
+        <div style="text-align:center; font-size:0.45rem; opacity:0.6; margin-top:28px; padding:18px;">
+            <i class="fas fa-shield-alt"></i> Laporan penggunaan dana tersedia setiap bulan
+        </div>
+    </main>
+</div>
+
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Detail</h3>
+            <div class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+</div>
+
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-check-circle"></i> Donasi Berhasil!</h3>
+            <div class="close-modal" onclick="closeSuccessModal()"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="modal-body" id="successModalBody"></div>
+    </div>
+</div>
+
+<script>
+const FONNTE_API_KEY = 'iSLQpBJxG3aZxn5eMuyg';
+const ADMIN_NUMBERS = ['628976391786', '6281315680425', '6285147119574'];
+
+let selectedDisaster = null;
+let donors = [];
+let selectedFile = null;
+let selectedFileBase64 = null;
+
+const bankData = {
+    BCA: { name: "BCA", number: "1234567890", owner: "Yayasan Bencana Indonesia" },
+    MANDIRI: { name: "MANDIRI", number: "1234567890123", owner: "Yayasan Bencana Indonesia" },
+    BRI: { name: "BRI", number: "123456789012345", owner: "Yayasan Bencana Indonesia" }
+};
+
+const disasters = [
+    { id: "gempa", name: "Gempa Bumi", icon: "fas- fa-house-crack", color: "#e07a5f", bg: "#e07a5f20", target: 2000000000, collected: 0, location: "Cianjur, Sukabumi", desc: "Gempa magnitudo 5.6" },
+    { id: "banjir", name: "Banjir Bandang", icon: "fa-water", color: "#3d9b6d", bg: "#3d9b6d20", target: 1500000000, collected: 0, location: "Garut, Bandung", desc: "Banjir ekstrem" },
+    { id: "gunung", name: "Gunung Meletus", icon: "fa-mountain", color: "#e0a343", bg: "#e0a34320", target: 1000000000, collected: 0, location: "Semeru, Merapi", desc: "Erupsi awan panas" },
+    { id: "longsor", name: "Tanah Longsor", icon: "fa-mound", color: "#c25d45", bg: "#c25d4520", target: 800000000, collected: 0, location: "Banjarnegara", desc: "Longsor akses jalan" },
+    { id: "karhutla", name: "Kebakaran Hutan", icon: "fa-fire", color: "#e07a5f", bg: "#e07a5f20", target: 500000000, collected: 0, location: "Riau, Kalimantan", desc: "Karhutla" }
+];
+
+function toggleTheme() {
+    if(document.body.classList.contains('dark')) {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        localStorage.setItem('theme', 'light');
+        showToast('🌞 Light mode aktif');
+    } else {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        showToast('🌙 Dark mode aktif');
+    }
+}
+if(localStorage.getItem('theme') === 'light') document.body.classList.replace('dark','light');
+
+function formatRp(amount) {
+    if(amount >= 1000000000) return 'Rp ' + (amount/1000000000).toFixed(1) + ' M';
+    if(amount >= 1000000) return 'Rp ' + (amount/1000000).toFixed(1) + ' Jt';
+    return 'Rp ' + amount.toLocaleString('id-ID');
+}
+
+function renderDisasters() {
+    const grid = document.getElementById('disasterGrid');
+    grid.innerHTML = disasters.map(d => {
+        const percent = d.target > 0 ? (d.collected/d.target)*100 : 0;
+        return `<div class="disaster-card ${selectedDisaster===d.id?'selected':''}" onclick="selectDisaster('${d.id}')">
+            <div class="disaster-icon" style="background:${d.bg}; color:${d.color};"><i class="fas ${d.icon}"></i></div>
+            <h3>${d.name}</h3>
+            <div class="location"><i class="fas fa-map-marker-alt"></i> ${d.location}</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${percent}%; background:${d.color};"></div></div>
+            <div class="disaster-stats"><span class="collected">${formatRp(d.collected)}</span><br>dari ${formatRp(d.target)}</div>
+        </div>`;
+    }).join('');
+}
+
+function selectDisaster(id) {
+    selectedDisaster = id;
+    const d = disasters.find(x=>x.id===id);
+    renderDisasters();
+    const percent = d.target>0 ? (d.collected/d.target)*100 : 0;
+    document.getElementById('selectedDisasterCard').style.display = 'block';
+    document.getElementById('selectedDisasterName').innerHTML = `<i class="fas ${d.icon}"></i> ${d.name}`;
+    document.getElementById('selectedDisasterLocation').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${d.location}`;
+    document.getElementById('selectedDisasterProgress').innerHTML = `Target: ${formatRp(d.target)} | Terkumpul: ${formatRp(d.collected)} (${percent.toFixed(0)}%)`;
+    document.getElementById('selectedDisasterInfo').innerHTML = `<i class="fas fa-check-circle" style="color:#2b6e4e;"></i> Donasi untuk: <strong>${d.name}</strong> di ${d.location}`;
+    showToast(`✅ Bencana ${d.name} dipilih`);
+}
+
+function updateSelectedBank() {
+    const bankSelect = document.getElementById('bankSelect');
+    const selectedBank = bankSelect.value;
+    const detailCard = document.getElementById('bankDetailCard');
+    if (selectedBank && bankData[selectedBank]) {
+        detailCard.style.display = 'block';
+        document.getElementById('selectedBankName').innerHTML = `<i class="fas fa-building-columns"></i> ${bankData[selectedBank].name}`;
+        document.getElementById('selectedBankNumber').innerHTML = bankData[selectedBank].number;
+    } else {
+        detailCard.style.display = 'none';
+    }
+}
+
+function copySelectedBank() {
+    const bankSelect = document.getElementById('bankSelect');
+    const selectedBank = bankSelect.value;
+    if (selectedBank && bankData[selectedBank]) {
+        navigator.clipboard.writeText(bankData[selectedBank].number);
+        showToast(`✅ Nomor ${bankData[selectedBank].name} (${bankData[selectedBank].number}) disalin`);
+    } else {
+        showToast('❌ Pilih bank terlebih dahulu');
+    }
+}
+
+document.querySelectorAll('.nominal-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('donorAmount').value = this.getAttribute('data-nominal');
+    });
+});
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.match('image.*')) { showToast('❌ Hanya file gambar yang diperbolehkan (JPG, PNG)'); return; }
+    if (file.size > 5 * 1024 * 1024) { showToast('❌ Ukuran file maksimal 5MB'); return; }
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        selectedFileBase64 = e.target.result;
+        const preview = document.getElementById('filePreview');
+        preview.style.display = 'flex';
+        preview.innerHTML = `<img src="${e.target.result}" alt="Preview"><span class="file-name">${file.name}</span><button class="remove-file" onclick="removeFile()"><i class="fas fa-trash"></i> Hapus</button>`;
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeFile() {
+    selectedFile = null;
+    selectedFileBase64 = null;
+    document.getElementById('filePreview').style.display = 'none';
+    document.getElementById('fileInput').value = '';
+}
+
+async function sendImageToWhatsApp(imageBase64, caption) {
+    let successCount = 0;
+    for (const adminNumber of ADMIN_NUMBERS) {
+        try {
+            let rawBase64 = imageBase64;
+            if (rawBase64.includes(',')) {
+                rawBase64 = rawBase64.split(',')[1];
+            }
+            const formData = new FormData();
+            formData.append('target', adminNumber);
+            formData.append('message', caption);
+            formData.append('file', rawBase64);
+            formData.append('filename', 'bukti_transfer.jpg');
+            const response = await fetch('https://api.fonnte.com/send', {
+                method: 'POST',
+                headers: { 'Authorization': FONNTE_API_KEY },
+                body: formData
+            });
+            const result = await response.json();
+            if (result.status === true) successCount++;
+        } catch(e) { console.error(e); }
+    }
+    return successCount;
+}
+
+async function processDonationWithImage() {
+    const name = document.getElementById('donorName').value.trim();
+    const email = document.getElementById('donorEmail').value.trim();
+    const phone = document.getElementById('donorPhone').value.trim();
+    let amount = parseInt(document.getElementById('donorAmount').value);
+    const message = document.getElementById('donorMessage').value.trim();
+    const bankSelect = document.getElementById('bankSelect').value;
+    
+    if(!name) { showToast('❌ Masukkan nama Anda'); return; }
+    if(!email || !email.includes('@')) { showToast('❌ Email tidak valid'); return; }
+    if(!phone || phone.length < 10) { showToast('❌ Masukkan nomor WhatsApp yang valid'); return; }
+    if(!amount || amount < 10000) { showToast('❌ Minimal donasi Rp10.000'); return; }
+    if(!selectedDisaster) { showToast('❌ Pilih bencana terlebih dahulu'); return; }
+    if(!bankSelect) { showToast('❌ Pilih bank tujuan terlebih dahulu'); return; }
+    if(!selectedFileBase64) { showToast('❌ Upload bukti transfer terlebih dahulu'); return; }
+    
+    const btn = document.getElementById('donateBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Mengirim bukti ke WhatsApp...';
+    
+    const disaster = disasters.find(d => d.id === selectedDisaster);
+    const selectedBank = bankData[bankSelect];
+    
+    const adminMessage = 
+`🌟 *DONASI BARU - INA-PREDICT* 🌟
+
+👤 *Nama:* ${name}
+📞 *WhatsApp:* ${phone}
+📧 *Email:* ${email}
+
+🌋 *Bencana:* ${disaster.name}
+📍 *Lokasi:* ${disaster.location}
+💰 *Nominal:* ${formatRp(amount)}
+
+🏦 *Bank Tujuan:* ${selectedBank.name}
+🔢 *No. Rekening:* ${selectedBank.number}
+
+💬 *Pesan:* ${message || '-'}
+
+📎 *Bukti Transfer:* TERLAMPIR DI BAWAH INI
+
+🕐 *Waktu:* ${new Date().toLocaleString('id-ID')}
+
+---
+✅ Mohon segera konfirmasi ke donatur via WhatsApp ${phone}
+
+🙏 Terima kasih atas kepeduliannya!`;
+    
+    const successCount = await sendImageToWhatsApp(selectedFileBase64, adminMessage);
+    
+    if (successCount > 0) {
+        disaster.collected += amount;
+        donors.unshift({ name, amount, date: new Date().toISOString(), message: message || '', disaster: selectedDisaster, email, phone, bank: selectedBank.name });
+        renderDonors();
+        renderDisasters();
+        saveToLocal();
+        
+        const confirmMessage = 
+`🙏 *Terima kasih, ${name}!*
+
+Donasi Anda telah tercatat:
+
+💰 *${formatRp(amount)}*
+🌋 *${disaster.name}* - ${disaster.location}
+🏦 *Bank:* ${selectedBank.name}
+
+📌 *Langkah Selanjutnya:*
+✅ Bukti transfer sudah kami terima
+📞 Admin akan mengonfirmasi via WhatsApp
+
+Terima kasih atas kepedulian Anda! 🙏
+
+INA-PREDICT | Sistem Informasi Bencana`;
+        
+        try {
+            let donorPhone = phone.replace(/[^0-9]/g, '');
+            if (!donorPhone.startsWith('62')) donorPhone = '62' + donorPhone;
+            const confirmFormData = new FormData();
+            confirmFormData.append('target', donorPhone);
+            confirmFormData.append('message', confirmMessage);
+            await fetch('https://api.fonnte.com/send', {
+                method: 'POST',
+                headers: { 'Authorization': FONNTE_API_KEY },
+                body: confirmFormData
+            });
+        } catch(e) { console.log('Konfirmasi ke donatur gagal'); }
+        
+        selectedDisaster = null;
+        selectedFile = null;
+        selectedFileBase64 = null;
+        document.getElementById('selectedDisasterCard').style.display = 'none';
+        document.getElementById('selectedDisasterInfo').innerHTML = '<i class="fas fa-info-circle"></i> ⚡ Klik kartu bencana di atas untuk memilih';
+        document.getElementById('filePreview').style.display = 'none';
+        document.getElementById('fileInput').value = '';
+        document.getElementById('donorName').value = '';
+        document.getElementById('donorEmail').value = '';
+        document.getElementById('donorPhone').value = '';
+        document.getElementById('donorAmount').value = '';
+        document.getElementById('donorMessage').value = '';
+        document.getElementById('bankSelect').value = '';
+        document.getElementById('bankDetailCard').style.display = 'none';
+        document.querySelectorAll('.nominal-btn').forEach(b => b.classList.remove('active'));
+        renderDisasters();
+        
+        document.getElementById('successModalBody').innerHTML = `
+            <div style="text-align:center; padding:8px;">
+                <i class="fas fa-check-circle" style="font-size:3rem; color:#2b6e4e; margin-bottom:12px;"></i>
+                <h4 style="margin-bottom:8px;">Donasi Berhasil Dikirim!</h4>
+                <p>Terima kasih <strong>${name}</strong></p>
+                <div style="font-size:1.2rem; font-weight:800; margin:12px 0;">${formatRp(amount)}</div>
+                <p>untuk <strong>${disaster.name}</strong> di ${disaster.location}</p>
+                <div class="info-card" style="margin-top:16px; text-align:left;">
+                    <p><i class="fab fa-whatsapp"></i> <strong>Bukti transfer + pesan sudah terkirim ke Admin!</strong></p>
+                    <p>Admin akan mengonfirmasi donasi Anda dalam 1x24 jam.</p>
+                </div>
+                <button class="btn-modal" style="margin-top:16px;" onclick="closeSuccessModal()">Tutup</button>
+            </div>
+        `;
+        document.getElementById('successModal').style.display = 'flex';
+    } else {
+        showToast('❌ Gagal mengirim bukti ke WhatsApp. Coba lagi nanti.');
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fab fa-whatsapp"></i> DONASI & KIRIM BUKTI KE WA';
+}
+
+function updateStats() {
+    let total = 0;
+    disasters.forEach(d => total += d.collected);
+    let todayTotal = 0;
+    const today = new Date().toDateString();
+    donors.forEach(d => { if(new Date(d.date).toDateString() === today) todayTotal += d.amount; });
+    document.getElementById('totalDonasi').innerHTML = formatRp(total);
+    document.getElementById('totalDonatur').innerHTML = donors.length;
+    document.getElementById('donasiHariIni').innerHTML = formatRp(todayTotal);
+    document.getElementById('donorCountDisplay').innerHTML = donors.length;
+}
+
+function renderDonors() {
+    const section = document.getElementById('donorSection');
+    const container = document.getElementById('donorList');
+    
+    if(donors.length === 0) {
+        section.classList.remove('visible');
+    } else {
+        section.classList.add('visible');
+        container.innerHTML = donors.slice(0, 30).map(d => {
+            const disaster = disasters.find(x=>x.id===d.disaster);
+            return `<div class="donor-item">
+                <div class="donor-avatar">${d.name.charAt(0).toUpperCase()}</div>
+                <div class="donor-info">
+                    <div class="donor-name">${d.name}<span class="disaster-badge">${disaster ? disaster.name : 'Bencana'}</span></div>
+                    <div class="donor-date">${new Date(d.date).toLocaleDateString('id-ID', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}</div>
+                    ${d.message ? `<div class="donor-message">"${d.message.substring(0, 60)}${d.message.length > 60 ? '...' : ''}"</div>` : ''}
+                </div>
+                <div class="donor-amount">${formatRp(d.amount)}</div>
+            </div>`;
+        }).join('');
+    }
+    updateStats();
+}
+
+function saveToLocal() {
+    localStorage.setItem('donation_donors_v3', JSON.stringify(donors));
+    localStorage.setItem('donation_disasters_v3', JSON.stringify(disasters.map(d => ({ id:d.id, collected:d.collected }))));
+}
+
+function loadFromLocal() {
+    const savedDonors = localStorage.getItem('donation_donors_v3');
+    if(savedDonors) { try { donors = JSON.parse(savedDonors); } catch(e){} }
+    const savedDis = localStorage.getItem('donation_disasters_v3');
+    if(savedDis) {
+        try { JSON.parse(savedDis).forEach(p => { const d = disasters.find(x=>x.id===p.id); if(d) d.collected = p.collected; }); } catch(e){}
+    }
+    renderDonors();
+    renderDisasters();
+    updateStats();
+}
+
+window.showDetail = (title, content) => {
+    document.getElementById('modalTitle').innerHTML = title;
+    document.getElementById('modalBody').innerHTML = `<div class="detail-card">${content}</div><button class="btn-modal" onclick="closeModal()">Tutup</button>`;
+    document.getElementById('detailModal').style.display = 'flex';
+};
+window.closeModal = () => document.getElementById('detailModal').style.display = 'none';
+window.closeSuccessModal = () => document.getElementById('successModal').style.display = 'none';
+function showToast(msg) { const t=document.createElement('div'); t.className='toast'; t.innerHTML=`<i class="fas fa-bell"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
+
+document.getElementById('lastUpdate').innerHTML = new Date().toLocaleString('id-ID');
+loadFromLocal();
+
+const uploadArea = document.getElementById('uploadArea');
+uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.style.borderColor = '#2b6e4e'; uploadArea.style.background = 'rgba(43,110,78,0.1)'; });
+uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = ''; uploadArea.style.background = ''; });
+uploadArea.addEventListener('drop', (e) => { 
+    e.preventDefault(); 
+    uploadArea.style.borderColor = ''; 
+    uploadArea.style.background = ''; 
+    const file = e.dataTransfer.files[0]; 
+    if(file && file.type.match('image.*')) { 
+        selectedFile = file; 
+        const reader = new FileReader(); 
+        reader.onload = function(ev) { 
+            selectedFileBase64 = ev.target.result;
+            document.getElementById('filePreview').style.display = 'flex'; 
+            document.getElementById('filePreview').innerHTML = `<img src="${ev.target.result}" style="width:60px;height:60px;object-fit:cover;border-radius:10px;"><span class="file-name">${file.name}</span><button class="remove-file" onclick="removeFile()"><i class="fas fa-trash"></i> Hapus</button>`; 
+        }; 
+        reader.readAsDataURL(file); 
+    } else { 
+        showToast('❌ Drop file gambar saja (JPG/PNG)'); 
+    } 
+});
+</script>
+</body>
+</html>

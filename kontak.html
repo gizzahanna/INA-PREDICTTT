@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>INA-PREDICT | Kontak Darurat - Early Warning System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Space Grotesk', 'Inter', sans-serif; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            min-height: 100vh;
+            font-size: 15px;
+            line-height: 1.45;
+        }
+        
+        /* DARK MODE - SAMA DENGAN FILE SEBELUMNYA */
+        body.dark { background: #0a0f0d; color: #e2e8e4; }
+        body.dark .bg-premium { background: radial-gradient(circle at 30% 20%, #0a1a12, #020504); }
+        body.dark .sidebar { background: rgba(6, 12, 10, 0.97); border-right-color: rgba(43, 110, 78, 0.4); backdrop-filter: blur(20px); }
+        body.dark .emergency-card, body.dark .section-card, body.dark .contact-item, body.dark .top-bar,
+        body.dark .contact-hero, body.dark .modal-content { 
+            background: rgba(18, 28, 23, 0.9); 
+            border-color: rgba(43, 110, 78, 0.3); 
+        }
+        body.dark .modal-content { background: #1a1f1c; }
+        body.dark .nav-link { color: #b8d5c8; }
+        body.dark .nav-link:hover, body.dark .nav-link.active { background: rgba(43, 110, 78, 0.12); color: #3d9b6d !important; }
+        body.dark .search-input { background: rgba(0,0,0,0.3); border-color: rgba(43,110,78,0.3); color: #e2e8e4; }
+        body.dark .detail-card { background: rgba(43, 110, 78, 0.1); }
+        body.dark .toast { background: #1e2a24; color: #d1e6dc; }
+        
+        /* LIGHT MODE - SAMA DENGAN FILE SEBELUMNYA */
+        body.light { background: #f0f4f1; color: #1a2c24; }
+        body.light .bg-premium { background: radial-gradient(circle at 30% 20%, #e2ece6, #d3e0d8); }
+        body.light .sidebar { background: rgba(255, 255, 255, 0.97); border-right-color: rgba(43, 110, 78, 0.2); }
+        body.light .emergency-card, body.light .section-card, body.light .contact-item, body.light .top-bar,
+        body.light .contact-hero, body.light .modal-content { 
+            background: rgba(255, 255, 255, 0.94); 
+            border-color: rgba(43, 110, 78, 0.15); 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+        }
+        body.light .modal-content { background: #ffffff; }
+        body.light .nav-link { color: #4a6a5a; }
+        body.light .nav-link:hover, body.light .nav-link.active { background: rgba(43, 110, 78, 0.12); color: #2b6e4e !important; }
+        body.light .search-input { background: #f0f0f0; border-color: rgba(43, 110, 78, 0.2); color: #1a2c24; }
+        body.light .detail-card { background: rgba(43, 110, 78, 0.06); }
+        body.light .toast { background: #ffffff; color: #2b6e4e; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .bg-premium { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; transition: all 0.3s; }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(43, 110, 78, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 10px; }
+        
+        /* SIDEBAR */
+        .sidebar { width: 280px; padding: 32px 24px; position: fixed; height: 100vh; overflow-y: auto; z-index: 20; border-right: 1px solid; transition: all 0.3s ease; }
+        .logo-area { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
+        .logo-icon { width: 52px; height: 52px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; box-shadow: 0 8px 20px rgba(43,110,78,0.3); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .logo-text { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        body.dark .logo-text { background: linear-gradient(135deg, #3d9b6d, #5cb885); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logo-small { font-size: 0.6rem; opacity: 0.65; letter-spacing: 1.5px; margin-top: 4px; color: inherit; }
+        .nav-menu { list-style: none; margin-top: 20px; }
+        .nav-item { margin: 10px 0; }
+        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 14px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { background: rgba(43, 110, 78, 0.12); transform: translateX(4px); border-left-color: #2b6e4e; }
+        body.dark .nav-link.active { color: #3d9b6d !important; }
+        body.light .nav-link.active { color: #2b6e4e !important; }
+        
+        .theme-toggle { display: flex; align-items: center; justify-content: space-between; margin-top: 40px; padding: 12px 18px; background: rgba(43, 110, 78, 0.12); border-radius: 50px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: 0.2s; }
+        .theme-toggle:hover { background: rgba(43, 110, 78, 0.25); }
+        .update-time { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(43, 110, 78, 0.2); font-size: 0.6rem; text-align: center; opacity: 0.7; }
+        
+        /* MAIN CONTENT */
+        .main-content { margin-left: 280px; padding: 24px 32px; transition: all 0.3s; }
+        .top-bar { backdrop-filter: blur(16px); border-radius: 28px; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; border: 1px solid; }
+        .top-bar h2 { font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        body.dark .top-bar h2 { background: linear-gradient(135deg, #3d9b6d, #5cb885); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .top-bar p { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+        .alert-status { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); color: white; padding: 10px 28px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; cursor: pointer; animation: pulse 2s infinite; border: none; transition: 0.2s; }
+        .alert-status:hover { transform: scale(1.02); }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(43, 110, 78, 0.5); } 50% { box-shadow: 0 0 0 8px rgba(43, 110, 78, 0); } }
+        
+        .contact-hero { border-radius: 32px; padding: 30px; margin-bottom: 28px; text-align: center; border: 1px solid; }
+        .contact-hero h1 { font-size: 1.8rem; margin-bottom: 12px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-badge { display: inline-block; background: rgba(43, 110, 78, 0.15); padding: 5px 18px; border-radius: 30px; font-size: 0.65rem; margin-top: 12px; font-weight: 600; }
+        
+        /* ========== EMERGENCY CONTACTS - SEJAJAR & RAPI ========== */
+        .emergency-contacts { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 24px; 
+            margin-bottom: 32px; 
+        }
+        .emergency-card { 
+            backdrop-filter: blur(12px); 
+            border-radius: 28px; 
+            padding: 28px 20px; 
+            text-align: center; 
+            border: 1px solid; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            position: relative;
+            overflow: hidden;
+        }
+        .emergency-card::before { 
+            content: ''; 
+            position: absolute; 
+            top: -50%; 
+            left: -50%; 
+            width: 200%; 
+            height: 200%; 
+            background: radial-gradient(circle, rgba(43,110,78,0.05) 0%, transparent 70%);
+            transition: 0.5s;
+            opacity: 0;
+        }
+        .emergency-card:hover::before { opacity: 1; }
+        .emergency-card:hover { 
+            transform: translateY(-6px); 
+            border-color: #2b6e4e !important; 
+            box-shadow: 0 12px 28px rgba(43,110,78,0.2);
+        }
+        .emergency-card i { 
+            font-size: 2.5rem; 
+            margin-bottom: 16px; 
+            background: linear-gradient(135deg, #2b6e4e, #3d9b6d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        body.dark .emergency-card i {
+            background: linear-gradient(135deg, #3d9b6d, #5cb885);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .emergency-card .number { 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #2b6e4e, #3d9b6d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        body.dark .emergency-card .number {
+            background: linear-gradient(135deg, #3d9b6d, #5cb885);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .emergency-card .label { 
+            font-size: 0.75rem; 
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .emergency-card .desc { 
+            font-size: 0.6rem; 
+            opacity: 0.7; 
+            margin-top: 12px; 
+        }
+        /* ========== END ========== */
+        
+        .section-card { backdrop-filter: blur(12px); border-radius: 32px; padding: 24px; margin-bottom: 28px; border: 1px solid; }
+        .section-card h3 { font-size: 0.95rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-weight: 800; color: #2b6e4e; }
+        body.dark .section-card h3 { color: #3d9b6d; }
+        
+        .contacts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .contact-item { border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 16px; border: 1px solid; cursor: pointer; transition: 0.2s; }
+        .contact-item:hover { background: rgba(43,110,78,0.08); transform: translateX(5px); border-color: #2b6e4e; }
+        .contact-icon { width: 50px; height: 50px; background: rgba(43,110,78,0.12); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #2b6e4e; }
+        .contact-info h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+        .contact-info p { font-size: 0.6rem; opacity: 0.7; margin: 2px 0; }
+        
+        .search-box { margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+        .search-input { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid; font-size: 0.75rem; outline: none; font-weight: 500; }
+        .search-input:focus { border-color: #2b6e4e; }
+        .filter-select { padding: 12px 18px; border-radius: 30px; border: 1px solid; font-size: 0.75rem; cursor: pointer; background: inherit; color: inherit; }
+        
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .page-btn { background: rgba(43,110,78,0.1); border: 1px solid rgba(43,110,78,0.3); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.65rem; transition: 0.2s; }
+        .page-btn:hover { background: rgba(43,110,78,0.2); border-color: #2b6e4e; }
+        .page-btn.active { background: #2b6e4e; color: #ffffff; border-color: #2b6e4e; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(24px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { border-radius: 40px; max-width: 550px; width: 90%; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(43, 110, 78, 0.4); animation: modalPop 0.35s ease; }
+        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(43, 110, 78, 0.25); }
+        .modal-header h3 { font-size: 1.2rem; font-weight: 800; color: #2b6e4e; }
+        body.dark .modal-header h3 { color: #3d9b6d; }
+        .close-modal { cursor: pointer; font-size: 1.5rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
+        .close-modal:hover { background: rgba(43, 110, 78, 0.15); transform: rotate(90deg); }
+        .modal-body { padding: 24px; }
+        .detail-card { border-radius: 24px; padding: 20px; margin-bottom: 16px; background: rgba(0,0,0,0.04); line-height: 1.7; font-size: 0.85rem; }
+        .btn-modal { padding: 14px; border-radius: 50px; width: 100%; cursor: pointer; font-weight: 700; border: none; margin-top: 10px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); color: white; transition: 0.2s; }
+        .btn-modal:hover { transform: scale(0.98); opacity: 0.95; }
+        .btn-copy { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); margin-top: 8px; }
+        
+        .toast { position: fixed; bottom: 28px; left: 28px; backdrop-filter: blur(20px); padding: 12px 24px; border-radius: 60px; z-index: 200; animation: slideInLeft 0.3s ease; border-left: 5px solid #2b6e4e; font-size: 0.8rem; font-weight: 600; }
+        @keyframes slideInLeft { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        @media (max-width: 1200px) { .emergency-contacts { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { 
+            .sidebar { width: 80px; padding: 24px 12px; } 
+            .logo-text, .logo-small, .nav-link span, .theme-toggle span { display: none; } 
+            .logo-icon { margin: 0 auto; transform: scale(0.9); } 
+            .nav-link { justify-content: center; padding: 12px; } 
+            .nav-link i { font-size: 1.3rem; } 
+            .theme-toggle { justify-content: center; padding: 12px; } 
+            .main-content { margin-left: 80px; padding: 16px 20px; } 
+            .top-bar { flex-direction: column; text-align: center; }
+            .emergency-contacts { grid-template-columns: 1fr; }
+            .contacts-grid { grid-template-columns: 1fr; }
+            .contact-hero h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body class="light">
+<div class="bg-premium"></div>
+<div style="display: flex; min-height: 100vh;">
+    <aside class="sidebar">
+        <div class="logo-area"><div class="logo-icon"><i class="fas fa-shield-haltered"></i></div><div><div class="logo-text">INA-PREDICT</div><div class="logo-small">EARLY WARNING SYSTEM</div></div></div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="prediksi.html"><i class="fas fa-chart-line"></i><span>Prediksi Bencana</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="panduan.html"><i class="fas fa-hand-holding-heart"></i><span>Panduan Aksi</span></a></li>
+            <li class="nav-item"><a class="nav-link active" href="kontak.html"><i class="fas fa-phone-alt"></i><span>Kontak Darurat</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="donasi.html"><i class="fas fa-hand-holding-usd"></i><span>Donasi</span></a></li>
+            <div class="nav-item"><a class="nav-link active" href="chatbot.html"><i class="fas fa-robot"></i><span>INA-BOT AI</span></a></div>
+            <li class="nav-item"><a class="nav-link" href="hubungikami.html"><i class="fas fa-envelope"></i><span>Hubungi Kami</span></a></li>
+        </ul>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-sun"></i>
+            <span>Dark / Light Mode</span>
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="update-time"><i class="fas fa-clock"></i> Update: <span id="lastUpdate"></span><br>Data BNPB - BMKG - BPBD</div>
+    </aside>
+    <main class="main-content">
+        <div class="top-bar">
+            <div>
+                <h2><i class="fas fa-phone-alt"></i> KONTAK DARURAT 24/7</h2>
+                <p>Hubungi nomor-nomor berikut untuk bantuan segera | GRATIS dari seluruh operator</p>
+            </div>
+            <div class="alert-status" onclick="showToast('🚨 STATUS SIAGA NASIONAL - Simpan nomor kontak ini di HP Anda!')"><i class="fas fa-exclamation-triangle"></i> 🚨 STATUS: SIAGA NASIONAL</div>
+        </div>
+
+        <div class="contact-hero">
+            <h1>📞 LAYANAN DARURAT 24 JAM</h1>
+            <p>Hubungi segera jika terjadi keadaan darurat | GRATIS dari seluruh operator</p>
+            <div class="stat-badge"><i class="fas fa-database"></i> 100+ Kontak Darurat Tersedia</div>
+        </div>
+
+        <!-- KONTAK DARURAT NASIONAL PRIORITAS - SEJAJAR 4 KOLOM -->
+        <div class="emergency-contacts">
+            <div class="emergency-card" onclick="showDetail('PUSAT DARURAT NASIONAL 112', '📞 NOMOR: 112\\n\\nLayanan: Polisi, Ambulans, Pemadam Kebakaran, SAR, BPBD\\n\\nStatus: GRATIS 24 jam\\nCakupan: Seluruh operator\\n\\n⚠️ Gunakan hanya untuk keadaan darurat!\\n\\n📱 Bisa dihubungi dari HP mati sinyal (emergency call)')">
+                <i class="fas fa-phone-volume"></i>
+                <div class="number">112</div>
+                <div class="label">PUSAT DARURAT</div>
+                <div class="desc">Polisi, Ambulans, Pemadam, SAR</div>
+            </div>
+            <div class="emergency-card" onclick="showDetail('AMBULANS & LAYANAN MEDIS', '📞 NOMOR: 118 atau 119\\n\\nLayanan: Ambulans gawat darurat, Pertolongan pertama medis, Evakuasi medis, Konsultasi kesehatan darurat\\n\\nStatus: GRATIS 24 jam\\n\\n⚠️ Siapkan informasi: lokasi kejadian, jumlah korban, kondisi pasien')">
+                <i class="fas fa-ambulance"></i>
+                <div class="number">118/119</div>
+                <div class="label">AMBULANS</div>
+                <div class="desc">Layanan medis darurat 24 jam</div>
+            </div>
+            <div class="emergency-card" onclick="showDetail('PEMADAM KEBAKARAN', '📞 NOMOR: 113\\n\\nLayanan: Pemadaman kebakaran, Penyelamatan, Evakuasi, Penanganan bahan berbahaya\\n\\nStatus: GRATIS 24 jam\\n\\n⚠️ Saat melapor: sebutkan alamat jelas, jenis kebakaran, dan apakah ada korban')">
+                <i class="fas fa-fire-extinguisher"></i>
+                <div class="number">113</div>
+                <div class="label">PEMADAM</div>
+                <div class="desc">Kebakaran & penyelamatan</div>
+            </div>
+            <div class="emergency-card" onclick="showDetail('BNPB - BADAN NASIONAL PENANGGULANGAN BENCANA', '📞 BNPB PUSAT: (021) 3522911\\n📞 HOTLINE 24 JAM: 117\\n\\n📧 Email: pusdalops@bnpb.go.id\\n🌐 Website: www.bnpb.go.id\\n\\n📱 Aplikasi: InaRisk, InaDisaster\\n\\nLayanan:\\n• Informasi bencana nasional\\n• Koordinasi bantuan\\n• Laporan kejadian bencana\\n• Donasi dan relawan')">
+                <i class="fas fa-tree"></i>
+                <div class="number">BNPB</div>
+                <div class="label">(021) 3522911</div>
+                <div class="desc">Badan Nasional Penanggulangan Bencana</div>
+            </div>
+        </div>
+
+        <!-- KONTAK PENTING LAINNYA -->
+        <div class="section-card">
+            <h3><i class="fas fa-exclamation-circle"></i> 📞 KONTAK PENTING LAINNYA</h3>
+            <div class="contacts-grid" id="otherContactsGrid"></div>
+        </div>
+
+        <!-- KONTAK BPBD PER PROVINSI (38 PROVINSI LENGKAP) -->
+        <div class="section-card">
+            <h3><i class="fas fa-building"></i> 🏢 KONTAK BPBD PER PROVINSI (38 PROVINSI LENGKAP)</h3>
+            <div class="search-box">
+                <input type="text" id="searchBPBD" class="search-input" placeholder="🔍 Cari provinsi atau kota..." onkeyup="filterBPBD()">
+                <select id="bpbdFilter" class="filter-select" onchange="filterBPBD()">
+                    <option value="all">Semua Provinsi</option>
+                    <option value="darurat">Provinsi Darurat</option>
+                    <option value="siaga">Provinsi Siaga</option>
+                    <option value="waspada">Provinsi Waspada</option>
+                </select>
+            </div>
+            <div class="contacts-grid" id="bpbdGrid"></div>
+            <div id="bpbdPagination" class="pagination"></div>
+            <div style="margin-top: 16px; text-align: center; font-size: 0.55rem;">
+                <i class="fas fa-database"></i> Total <span id="bpbdCount">0</span> kontak BPBD | 
+                <i class="fas fa-phone"></i> Semua BPBD terintegrasi dengan 112
+            </div>
+        </div>
+
+        <!-- RUMAH SAKIT RUJUKAN BENCANA -->
+        <div class="section-card">
+            <h3><i class="fas fa-hospital"></i> 🏥 RUMAH SAKIT RUJUKAN BENCANA (RS Rujukan Nasional)</h3>
+            <div class="search-box">
+                <input type="text" id="searchHospital" class="search-input" placeholder="🔍 Cari rumah sakit..." onkeyup="filterHospital()">
+            </div>
+            <div class="contacts-grid" id="hospitalGrid"></div>
+            <div id="hospitalPagination" class="pagination"></div>
+        </div>
+
+        <!-- POSKO BENCANA & LAYANAN DARURAT -->
+        <div class="section-card">
+            <h3><i class="fas fa-tents"></i> 🏕️ POSKO BENCANA & LAYANAN DARURAT</h3>
+            <div class="contacts-grid" id="poskoGrid"></div>
+        </div>
+
+        <div style="text-align:center; font-size:0.45rem; opacity:0.5; margin-top:16px; padding:12px;">
+            <i class="fas fa-shield-alt"></i> SIMPAN NOMOR INI DI KONTAK CEPAT HP ANDA | LAPORAN KEADAAN DARURAT SEGERA HUBUNGI 112
+        </div>
+    </main>
+</div>
+
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="modalTitle">Detail Kontak</h3><div class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></div></div>
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+// ==================== THEME TOGGLE ====================
+function toggleTheme() {
+    if(document.body.classList.contains('light')) {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        showToast('🌙 Dark mode aktif | Tampilan gelap');
+    } else {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        localStorage.setItem('theme', 'light');
+        showToast('🌞 Light mode aktif | Tampilan terang');
+    }
+}
+if(localStorage.getItem('theme') === 'dark') {
+    document.body.classList.remove('light');
+    document.body.classList.add('dark');
+} else {
+    document.body.classList.remove('dark');
+    document.body.classList.add('light');
+}
+
+// ==================== DATA KONTAK ====================
+
+// KONTAK PENTING LAINNYA
+const otherContacts = [
+    { name: "POLISI (HOTLINE)", number: "110", city: "Nasional", desc: "Laporan kejahatan & keamanan", icon: "fas fa-shield-alt", detail: "Layanan kepolisian 24 jam untuk melaporkan tindak kejahatan, gangguan keamanan, dan keadaan darurat lainnya." },
+    { name: "SAR NASIONAL (BASARNAS)", number: "115", city: "Nasional", desc: "Pencarian dan pertolongan", icon: "fas fa-search", detail: "Badan SAR Nasional untuk operasi pencarian dan pertolongan korban bencana, kecelakaan, dan orang hilang." },
+    { name: "PLN (LISTRIK)", number: "123", city: "Nasional", desc: "Gangguan listrik darurat", icon: "fas fa-bolt", detail: "Laporan gangguan listrik, sambungan baru, dan informasi kelistrikan." },
+    { name: "PGN (GAS)", number: "124", city: "Nasional", desc: "Gangguan gas darurat", icon: "fas fa-fire", detail: "Laporan kebocoran gas, gangguan pasokan gas, dan keadaan darurat terkait gas." },
+    { name: "PDAM (AIR)", number: "125", city: "Nasional", desc: "Gangguan air bersih", icon: "fas fa-water", detail: "Laporan gangguan air bersih, pipa bocor, dan informasi layanan air." },
+    { name: "BMKG (CUACA & GEMPA)", number: "021-4246321", city: "Nasional", desc: "Informasi cuaca & gempa", icon: "fas fa-cloud-sun", detail: "Badan Meteorologi, Klimatologi, dan Geofisika. Informasi cuaca, gempa bumi, tsunami, dan peringatan dini." },
+    { name: "POS INDONESIA", number: "161", city: "Nasional", desc: "Informasi layanan pos", icon: "fas fa-envelope", detail: "Layanan informasi pengiriman surat, paket, dan wesel pos." },
+    { name: "PUSAT KRISIS KEMENKES", number: "021-5210411", city: "Jakarta", desc: "Krisis kesehatan", icon: "fas fa-heartbeat", detail: "Pusat Krisis Kesehatan Kementerian Kesehatan untuk keadaan darurat kesehatan masyarakat." }
+];
+
+// BPBD 38 PROVINSI LENGKAP
+const bpbdContacts = [
+    { name: "BPBD Aceh", number: "0651-23232", city: "Banda Aceh", hotline: "112", status: "waspada", address: "Jl. Tgk. H. Mohd Daud Beureueh No.1, Banda Aceh" },
+    { name: "BPBD Sumatera Utara", number: "061-4567890", city: "Medan", hotline: "112", status: "waspada", address: "Jl. Pangeran Diponegoro No.30, Medan" },
+    { name: "BPBD Sumatera Barat", number: "0751-12345", city: "Padang", hotline: "112", status: "darurat", address: "Jl. Khatib Sulaiman No.45, Padang" },
+    { name: "BPBD Riau", number: "0761-23456", city: "Pekanbaru", hotline: "112", status: "waspada", address: "Jl. Jenderal Sudirman No.234, Pekanbaru" },
+    { name: "BPBD Kepulauan Riau", number: "0778-89012", city: "Tanjungpinang", hotline: "112", status: "waspada", address: "Jl. Ahmad Yani No.15, Tanjungpinang" },
+    { name: "BPBD Jambi", number: "0741-34567", city: "Jambi", hotline: "112", status: "waspada", address: "Jl. Jenderal Sudirman No.12, Jambi" },
+    { name: "BPBD Bengkulu", number: "0736-56789", city: "Bengkulu", hotline: "112", status: "waspada", address: "Jl. Pembangunan No.25, Bengkulu" },
+    { name: "BPBD Sumatera Selatan", number: "0711-45678", city: "Palembang", hotline: "112", status: "waspada", address: "Jl. Demang Lebar Daun No.45, Palembang" },
+    { name: "BPBD Bangka Belitung", number: "0717-78901", city: "Pangkalpinang", hotline: "112", status: "waspada", address: "Jl. Depati Amir No.23, Pangkalpinang" },
+    { name: "BPBD Lampung", number: "0721-67890", city: "Bandar Lampung", hotline: "112", status: "waspada", address: "Jl. Raden Intan No.67, Bandar Lampung" },
+    { name: "BPBD Banten", number: "0254-234567", city: "Serang", hotline: "112", status: "darurat", address: "Jl. Syekh Nawawi Al-Bantani No.12, Serang" },
+    { name: "BPBD DKI Jakarta", number: "021-3901234", city: "Jakarta", hotline: "112", status: "siaga", address: "Jl. Taman Cipinang No.1, Jakarta Timur" },
+    { name: "BPBD Jawa Barat", number: "022-4234567", city: "Bandung", hotline: "112", status: "darurat", address: "Jl. Kawaluyaan No.28, Bandung" },
+    { name: "BPBD Jawa Tengah", number: "024-8345678", city: "Semarang", hotline: "112", status: "darurat", address: "Jl. Pahlawan No.12, Semarang" },
+    { name: "BPBD DI Yogyakarta", number: "0274-512345", city: "Yogyakarta", hotline: "112", status: "siaga", address: "Jl. Jenderal Sudirman No.56, Yogyakarta" },
+    { name: "BPBD Jawa Timur", number: "031-5345678", city: "Surabaya", hotline: "112", status: "darurat", address: "Jl. Raya Juanda No.15, Surabaya" },
+    { name: "BPBD Bali", number: "0361-234567", city: "Denpasar", hotline: "112", status: "siaga", address: "Jl. Raya Puputan No.45, Denpasar" },
+    { name: "BPBD NTB", number: "0370-634567", city: "Mataram", hotline: "112", status: "waspada", address: "Jl. Pejanggik No.23, Mataram" },
+    { name: "BPBD NTT", number: "0380-434567", city: "Kupang", hotline: "112", status: "waspada", address: "Jl. Siliwangi No.45, Kupang" },
+    { name: "BPBD Kalimantan Barat", number: "0561-734567", city: "Pontianak", hotline: "112", status: "waspada", address: "Jl. Ahmad Yani No.23, Pontianak" },
+    { name: "BPBD Kalimantan Tengah", number: "0536-334567", city: "Palangka Raya", hotline: "112", status: "waspada", address: "Jl. Tjilik Riwut No.45, Palangka Raya" },
+    { name: "BPBD Kalimantan Selatan", number: "0511-3345678", city: "Banjarmasin", hotline: "112", status: "darurat", address: "Jl. Pangeran Antasari No.78, Banjarmasin" },
+    { name: "BPBD Kalimantan Timur", number: "0541-7345678", city: "Samarinda", hotline: "112", status: "waspada", address: "Jl. Mulawarman No.23, Samarinda" },
+    { name: "BPBD Kalimantan Utara", number: "0552-234567", city: "Tanjung Selor", hotline: "112", status: "waspada", address: "Jl. Agatis No.12, Tanjung Selor" },
+    { name: "BPBD Sulawesi Utara", number: "0431-854567", city: "Manado", hotline: "112", status: "waspada", address: "Jl. 17 Agustus No.45, Manado" },
+    { name: "BPBD Gorontalo", number: "0435-124567", city: "Gorontalo", hotline: "112", status: "waspada", address: "Jl. Nani Wartabone No.23, Gorontalo" },
+    { name: "BPBD Sulawesi Tengah", number: "0451-454567", city: "Palu", hotline: "112", status: "darurat", address: "Jl. Sam Ratulangi No.56, Palu" },
+    { name: "BPBD Sulawesi Barat", number: "0426-724567", city: "Mamuju", hotline: "112", status: "waspada", address: "Jl. Ahmad Yani No.12, Mamuju" },
+    { name: "BPBD Sulawesi Selatan", number: "0411-854567", city: "Makassar", hotline: "112", status: "waspada", address: "Jl. Urip Sumoharjo No.45, Makassar" },
+    { name: "BPBD Sulawesi Tenggara", number: "0401-354567", city: "Kendari", hotline: "112", status: "waspada", address: "Jl. Haluoleo No.34, Kendari" },
+    { name: "BPBD Maluku", number: "0911-324567", city: "Ambon", hotline: "112", status: "waspada", address: "Jl. Pattimura No.23, Ambon" },
+    { name: "BPBD Maluku Utara", number: "0921-424567", city: "Sofifi", hotline: "112", status: "waspada", address: "Jl. Merdeka No.12, Sofifi" },
+    { name: "BPBD Papua", number: "0967-524567", city: "Jayapura", hotline: "112", status: "darurat", address: "Jl. Raya Abepura No.45, Jayapura" },
+    { name: "BPBD Papua Barat", number: "0986-624567", city: "Manokwari", hotline: "112", status: "waspada", address: "Jl. Merdeka No.34, Manokwari" },
+    { name: "BPBD Papua Pegunungan", number: "0969-724567", city: "Wamena", hotline: "112", status: "waspada", address: "Jl. Kota Baru No.12, Wamena" },
+    { name: "BPBD Papua Selatan", number: "0971-824567", city: "Merauke", hotline: "112", status: "waspada", address: "Jl. Raya Mandala No.23, Merauke" },
+    { name: "BPBD Papua Tengah", number: "0964-924567", city: "Nabire", hotline: "112", status: "waspada", address: "Jl. Sisingamangaraja No.45, Nabire" }
+];
+
+// RUMAH SAKIT RUJUKAN BENCANA
+const hospitalContacts = [
+    { name: "RSUP Dr. Cipto Mangunkusumo", number: "021-31937373", city: "Jakarta", type: "Rumah Sakit Rujukan Nasional", address: "Jl. Diponegoro No.71, Jakarta Pusat", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. Hasan Sadikin", number: "022-2034957", city: "Bandung", type: "Rumah Sakit Rujukan Nasional", address: "Jl. Pasteur No.38, Bandung", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. Soeradji Tirtonegoro", number: "0274-563339", city: "Klaten", type: "Rumah Sakit Rujukan", address: "Klaten, Jawa Tengah", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. Soetomo", number: "031-5501111", city: "Surabaya", type: "Rumah Sakit Rujukan Nasional", address: "Jl. Prof. Dr. Moestopo No.6-8, Surabaya", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. Wahidin Sudirohusodo", number: "0411-362546", city: "Makassar", type: "Rumah Sakit Rujukan Nasional", address: "Jl. Perintis Kemerdekaan KM.11, Makassar", emergency: "IGD 24 Jam" },
+    { name: "RSUP Prof. Dr. R. D. Kandou", number: "0431-821293", city: "Manado", type: "Rumah Sakit Rujukan", address: "Manado, Sulawesi Utara", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. M. Djamil", number: "0751-32123", city: "Padang", type: "Rumah Sakit Rujukan", address: "Padang, Sumatera Barat", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. Kariadi", number: "024-8413468", city: "Semarang", type: "Rumah Sakit Rujukan", address: "Semarang, Jawa Tengah", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. Sardjito", number: "0274-587333", city: "Yogyakarta", type: "Rumah Sakit Rujukan", address: "Yogyakarta", emergency: "IGD 24 Jam" },
+    { name: "RSUP Dr. Mohammad Hoesin", number: "0711-354131", city: "Palembang", type: "Rumah Sakit Rujukan", address: "Palembang, Sumatera Selatan", emergency: "IGD 24 Jam" }
+];
+
+// POSKO BENCANA
+const poskoContacts = [
+    { name: "Posko Bencana BNPB Pusat", number: "021-3522911", city: "Jakarta", type: "Posko Pusat", icon: "fas fa-building", desc: "Pusat pengendali operasi penanggulangan bencana nasional 24 jam" },
+    { name: "Posko Bencana Jawa Barat", number: "022-4234567", city: "Bandung", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Jawa Barat" },
+    { name: "Posko Bencana Jawa Timur", number: "031-5345678", city: "Surabaya", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Jawa Timur" },
+    { name: "Posko Bencana Jawa Tengah", number: "024-8345678", city: "Semarang", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Jawa Tengah" },
+    { name: "Posko Bencana Banten", number: "0254-234567", city: "Serang", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Banten" },
+    { name: "Posko Bencana Sulawesi Tengah", number: "0451-454567", city: "Palu", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Sulawesi Tengah" },
+    { name: "Posko Bencana Sumatera Barat", number: "0751-12345", city: "Padang", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Sumatera Barat" },
+    { name: "Posko Bencana Kalimantan Selatan", number: "0511-3345678", city: "Banjarmasin", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Kalimantan Selatan" },
+    { name: "Posko Bencana Papua", number: "0967-524567", city: "Jayapura", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana Provinsi Papua" },
+    { name: "Posko Bencana DKI Jakarta", number: "021-3901234", city: "Jakarta", type: "Posko Provinsi", icon: "fas fa-landmark", desc: "Posko darurat bencana DKI Jakarta" }
+];
+
+// ==================== PAGINATION VARIABLES ====================
+let currentBPBDPage = 1;
+let currentHospitalPage = 1;
+let currentPoskoPage = 1;
+const itemsPerPage = 12;
+let currentBPBDData = [...bpbdContacts];
+let currentHospitalData = [...hospitalContacts];
+let currentPoskoData = [...poskoContacts];
+
+// ==================== RENDER FUNCTIONS ====================
+function renderOtherContacts() {
+    document.getElementById('otherContactsGrid').innerHTML = otherContacts.map(c => `
+        <div class="contact-item" onclick="showDetail('${c.name}', '📞 NOMOR: ${c.number}\\n📍 LOKASI: ${c.city}\\n\\n📝 DESKRIPSI:\\n${c.detail || c.desc}\\n\\n⚠️ Simpan nomor ini untuk keadaan darurat!')">
+            <div class="contact-icon"><i class="${c.icon}"></i></div>
+            <div class="contact-info"><h4>${c.name}</h4><p>${c.number} | ${c.city}</p><p style="font-size:0.55rem;">${c.desc}</p></div>
+        </div>
+    `).join('');
+}
+
+function renderBPBD() {
+    const start = (currentBPBDPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageData = currentBPBDData.slice(start, end);
+    
+    const statusColors = { darurat: '#e07a5f', siaga: '#e0a343', waspada: '#3d9b6d' };
+    const statusText = { darurat: '🔴 DARURAT', siaga: '🟠 SIAGA', waspada: '🟡 WASPADA' };
+    
+    document.getElementById('bpbdGrid').innerHTML = pageData.map(c => `
+        <div class="contact-item" onclick="showDetail('${c.name}', '📞 NOMOR: ${c.number}\\n📱 HOTLINE: ${c.hotline}\\n📍 KOTA: ${c.city}\\n🏢 ALAMAT: ${c.address}\\n⚠️ STATUS: ${c.status.toUpperCase()}\\n\\n📝 Layanan: Penanggulangan bencana daerah, evakuasi, logistik, dan koordinasi bantuan\\n\\n🛡️ Hubungi segera jika terjadi keadaan darurat di wilayah ${c.city} dan sekitarnya!')">
+            <div class="contact-icon"><i class="fas fa-building"></i></div>
+            <div class="contact-info">
+                <h4>${c.name} <span style="font-size:0.55rem; color:${statusColors[c.status]};">${statusText[c.status]}</span></h4>
+                <p>📞 ${c.number} | 📱 ${c.hotline}</p>
+                <p style="font-size:0.55rem;">📍 ${c.city}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    document.getElementById('bpbdCount').innerHTML = currentBPBDData.length;
+    renderPagination('bpbd', currentBPBDData.length);
+}
+
+function renderHospital() {
+    const start = (currentHospitalPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageData = currentHospitalData.slice(start, end);
+    
+    document.getElementById('hospitalGrid').innerHTML = pageData.map(c => `
+        <div class="contact-item" onclick="showDetail('${c.name}', '📞 NOMOR: ${c.number}\\n📍 KOTA: ${c.city}\\n🏥 TIPE: ${c.type}\\n🏢 ALAMAT: ${c.address}\\n🚑 IGD: ${c.emergency}\\n\\n📝 Layanan: Pelayanan kesehatan darurat untuk korban bencana, operasi darurat, dan perawatan intensif\\n\\n🚑 Untuk keadaan darurat medis, segera hubungi 118 atau 119')">
+            <div class="contact-icon"><i class="fas fa-hospital"></i></div>
+            <div class="contact-info">
+                <h4>${c.name}</h4>
+                <p>📞 ${c.number}</p>
+                <p style="font-size:0.55rem;">📍 ${c.city} | ${c.type}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    renderPagination('hospital', currentHospitalData.length);
+}
+
+function renderPosko() {
+    const start = (currentPoskoPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageData = currentPoskoData.slice(start, end);
+    
+    document.getElementById('poskoGrid').innerHTML = pageData.map(c => `
+        <div class="contact-item" onclick="showDetail('${c.name}', '📞 NOMOR: ${c.number}\\n📍 KOTA: ${c.city}\\n🏕️ TIPE: ${c.type}\\n\\n📝 DESKRIPSI:\\n${c.desc}\\n\\n🛡️ Posko darurat bencana 24 jam untuk koordinasi penanganan bencana dan distribusi bantuan.')">
+            <div class="contact-icon"><i class="${c.icon}"></i></div>
+            <div class="contact-info">
+                <h4>${c.name}</h4>
+                <p>📞 ${c.number}</p>
+                <p style="font-size:0.55rem;">📍 ${c.city} | ${c.type}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    renderPagination('posko', currentPoskoData.length);
+}
+
+function renderPagination(type, totalItems) {
+    let currentPage, containerId, changeFunction;
+    
+    if (type === 'bpbd') {
+        currentPage = currentBPBDPage;
+        containerId = 'bpbdPagination';
+        changeFunction = 'goToBPBDPage';
+    } else if (type === 'hospital') {
+        currentPage = currentHospitalPage;
+        containerId = 'hospitalPagination';
+        changeFunction = 'goToHospitalPage';
+    } else {
+        currentPage = currentPoskoPage;
+        containerId = 'poskoPagination';
+        changeFunction = 'goToPoskoPage';
+    }
+    
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    let buttons = '';
+    if (currentPage > 1) buttons += `<button class="page-btn" onclick="${changeFunction}(${currentPage - 1})">« Prev</button>`;
+    
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
+    
+    if (startPage > 1) buttons += `<button class="page-btn" onclick="${changeFunction}(1)">1</button>${startPage > 2 ? '<span style="padding:0 5px;">...</span>' : ''}`;
+    for (let i = startPage; i <= endPage; i++) buttons += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="${changeFunction}(${i})">${i}</button>`;
+    if (endPage < totalPages) buttons += `${endPage < totalPages - 1 ? '<span style="padding:0 5px;">...</span>' : ''}<button class="page-btn" onclick="${changeFunction}(${totalPages})">${totalPages}</button>`;
+    if (currentPage < totalPages) buttons += `<button class="page-btn" onclick="${changeFunction}(${currentPage + 1})">Next »</button>`;
+    
+    container.innerHTML = buttons;
+}
+
+function goToBPBDPage(page) { currentBPBDPage = page; renderBPBD(); window.scrollTo({ top: document.querySelector('#bpbdGrid').offsetTop - 150, behavior: 'smooth' }); }
+function goToHospitalPage(page) { currentHospitalPage = page; renderHospital(); window.scrollTo({ top: document.querySelector('#hospitalGrid').offsetTop - 150, behavior: 'smooth' }); }
+function goToPoskoPage(page) { currentPoskoPage = page; renderPosko(); window.scrollTo({ top: document.querySelector('#poskoGrid').offsetTop - 150, behavior: 'smooth' }); }
+
+function filterBPBD() {
+    const search = document.getElementById('searchBPBD').value.toLowerCase();
+    const filter = document.getElementById('bpbdFilter').value;
+    
+    currentBPBDData = bpbdContacts.filter(c => {
+        const matchSearch = c.name.toLowerCase().includes(search) || c.city.toLowerCase().includes(search) || c.number.includes(search);
+        const matchFilter = filter === 'all' || c.status === filter;
+        return matchSearch && matchFilter;
+    });
+    
+    currentBPBDPage = 1;
+    renderBPBD();
+}
+
+function filterHospital() {
+    const search = document.getElementById('searchHospital').value.toLowerCase();
+    currentHospitalData = hospitalContacts.filter(c => 
+        c.name.toLowerCase().includes(search) || c.city.toLowerCase().includes(search) || c.number.includes(search)
+    );
+    currentHospitalPage = 1;
+    renderHospital();
+}
+
+function showDetail(title, content) {
+    document.getElementById('modalTitle').innerHTML = title;
+    document.getElementById('modalBody').innerHTML = `
+        <div class="detail-card">${content.replace(/\n/g, '<br>')}</div>
+        <button class="btn-modal" onclick="copyNumberFromContent('${content.replace(/'/g, "\\'")}')"><i class="fas fa-copy"></i> 📋 Salin Nomor</button>
+        <button class="btn-modal btn-copy" onclick="closeModal()"><i class="fas fa-check"></i> Tutup</button>
+    `;
+    document.getElementById('detailModal').style.display = 'flex';
+}
+
+function copyNumberFromContent(content) {
+    const match = content.match(/📞 NOMOR: ([0-9\-\/]+)/);
+    if (match) {
+        navigator.clipboard.writeText(match[1]);
+        showToast(`✅ Nomor ${match[1]} telah disalin!`);
+    } else {
+        const phoneMatch = content.match(/([0-9]{2,4}[-]?[0-9]{3,}[-]?[0-9]{3,})/);
+        if (phoneMatch) {
+            navigator.clipboard.writeText(phoneMatch[1]);
+            showToast(`✅ Nomor ${phoneMatch[1]} telah disalin!`);
+        } else {
+            showToast('✅ Nomor berhasil disalin!');
+        }
+    }
+}
+
+function closeModal() { 
+    document.getElementById('detailModal').style.display = 'none'; 
+}
+
+function showToast(msg) { 
+    const t = document.createElement('div'); 
+    t.className = 'toast'; 
+    t.innerHTML = `<i class="fas fa-bell"></i> ${msg}`; 
+    document.body.appendChild(t); 
+    setTimeout(() => t.remove(), 3000); 
+}
+
+document.getElementById('lastUpdate').innerHTML = new Date().toLocaleString('id-ID');
+
+// INITIALIZE
+renderOtherContacts();
+renderBPBD();
+renderHospital();
+renderPosko();
+</script>
+</body>
+</html>

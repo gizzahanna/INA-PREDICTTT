@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>INA-PREDICT | Panduan Aksi Bencana - Lengkap</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Space Grotesk', 'Inter', sans-serif; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            min-height: 100vh;
+            font-size: 15px;
+            line-height: 1.45;
+        }
+        
+        body.dark { background: #0a0f0d; color: #e2e8e4; }
+        body.dark .bg-gradient { background: radial-gradient(circle at 30% 20%, #0a1a12, #020504); }
+        body.dark .sidebar { background: rgba(6, 12, 10, 0.97); border-right-color: rgba(43, 110, 78, 0.4); backdrop-filter: blur(20px); }
+        body.dark .glass-card, body.dark .info-card, body.dark .step-card, 
+        body.dark .kit-card, body.dark .top-bar, body.dark .modal-content,
+        body.dark .disaster-card, body.dark .tips-card, body.dark .contact-card { 
+            background: rgba(18, 28, 23, 0.9); 
+            border-color: rgba(43, 110, 78, 0.3); 
+        }
+        
+        body.light { background: linear-gradient(135deg, #e8f0ec 0%, #d4e4dc 100%); color: #1a2c24; }
+        body.light .bg-gradient { background: radial-gradient(circle at 30% 20%, #ffffff, #e0ece6); }
+        body.light .sidebar { background: rgba(255, 255, 255, 0.97); border-right-color: rgba(43, 110, 78, 0.2); }
+        body.light .glass-card, body.light .info-card, body.light .step-card,
+        body.light .kit-card, body.light .top-bar, body.light .modal-content,
+        body.light .disaster-card, body.light .tips-card, body.light .contact-card { 
+            background: rgba(255, 255, 255, 0.94); 
+            border-color: rgba(43, 110, 78, 0.15); 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+        }
+        
+        .logo-text, .nav-link:hover, .nav-link.active {
+            color: #2b6e4e !important;
+        }
+        body.dark .logo-text, body.dark .nav-link:hover, body.dark .nav-link.active {
+            color: #3d9b6d !important;
+        }
+        
+        .alert-status, .ai-badge {
+            background: linear-gradient(135deg, #2b6e4e, #3d9b6d);
+            color: white;
+        }
+        
+        .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; transition: all 0.3s; }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(43, 110, 78, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 10px; }
+        
+        .sidebar { width: 280px; padding: 32px 24px; position: fixed; height: 100vh; overflow-y: auto; z-index: 20; border-right: 1px solid; transition: all 0.3s ease; }
+        .logo { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
+        .logo-icon { width: 52px; height: 52px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; box-shadow: 0 8px 20px rgba(43,110,78,0.3); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .logo-text { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-small { font-size: 0.6rem; opacity: 0.65; letter-spacing: 1.5px; margin-top: 4px; color: inherit; }
+        .nav-item { margin: 10px 0; }
+        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 14px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; }
+        body.dark .nav-link { color: #b8d5c8; }
+        body.light .nav-link { color: #4a6a5a; }
+        .nav-link:hover, .nav-link.active { background: rgba(43, 110, 78, 0.12); color: #2b6e4e !important; border-left-color: #2b6e4e; transform: translateX(4px); }
+        .theme-toggle { display: flex; align-items: center; justify-content: space-between; margin-top: 40px; padding: 12px 18px; background: rgba(43, 110, 78, 0.12); border-radius: 50px; cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: 0.2s; }
+        .theme-toggle:hover { background: rgba(43, 110, 78, 0.25); }
+        .update-time { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(43, 110, 78, 0.2); font-size: 0.6rem; text-align: center; opacity: 0.7; }
+        
+        .main-content { margin-left: 280px; padding: 24px 32px; transition: all 0.3s; }
+        .top-bar { backdrop-filter: blur(16px); border-radius: 28px; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; border: 1px solid; }
+        .top-bar h2 { font-size: 1.2rem; font-weight: 800; }
+        .top-bar p { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+        .alert-status { padding: 10px 28px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; cursor: pointer; animation: pulse 2s infinite; border: none; transition: 0.2s; }
+        .alert-status:hover { transform: scale(1.02); }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(43, 110, 78, 0.5); } 50% { box-shadow: 0 0 0 8px rgba(43, 110, 78, 0); } }
+        
+        .hero-section { border-radius: 32px; padding: 40px 30px; margin-bottom: 28px; text-align: center; border: 1px solid rgba(43, 110, 78, 0.3); background: linear-gradient(135deg, rgba(43, 110, 78, 0.15), rgba(43, 110, 78, 0.03)); position: relative; overflow: hidden; }
+        .hero-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(61,155,109,0.1) 0%, transparent 70%); animation: rotate 20s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .hero-section h1 { font-size: 1.8rem; margin-bottom: 12px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; position: relative; z-index: 1; }
+        
+        .glass-card { backdrop-filter: blur(12px); border-radius: 32px; border: 1px solid; padding: 28px; transition: all 0.3s ease; margin-bottom: 28px; }
+        .glass-card:hover { border-color: rgba(43, 110, 78, 0.6); transform: translateY(-2px); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 2px solid rgba(43, 110, 78, 0.2); padding-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+        .card-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
+        
+        .risk-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+        .risk-card { border-radius: 28px; padding: 28px; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden; animation: fadeInUp 0.5s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .risk-card:hover { transform: translateY(-8px); }
+        .risk-card.high { background: linear-gradient(135deg, rgba(224, 122, 95, 0.25), rgba(224, 122, 95, 0.08)); border-left: 5px solid #e07a5f; }
+        .risk-card.medium { background: linear-gradient(135deg, rgba(224, 163, 67, 0.25), rgba(224, 163, 67, 0.08)); border-left: 5px solid #e0a343; }
+        .risk-card.low { background: linear-gradient(135deg, rgba(61, 155, 109, 0.25), rgba(61, 155, 109, 0.08)); border-left: 5px solid #3d9b6d; }
+        .risk-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+        .risk-card h4 { font-size: 1.2rem; margin-bottom: 12px; font-weight: 800; }
+        .risk-card p { font-size: 0.7rem; line-height: 1.5; opacity: 0.85; margin-bottom: 18px; }
+        .risk-badge { display: inline-block; padding: 6px 16px; border-radius: 30px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; }
+        .risk-badge.high { background: #e07a5f; color: white; }
+        .risk-badge.medium { background: #e0a343; color: white; }
+        .risk-badge.low { background: #3d9b6d; color: white; }
+        
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 22px; }
+        .step-card { border-radius: 24px; padding: 22px; transition: all 0.3s ease; border: 1px solid rgba(43, 110, 78, 0.15); display: flex; gap: 18px; align-items: flex-start; cursor: pointer; }
+        .step-card:hover { transform: translateX(6px) translateY(-4px); border-color: #2b6e4e; background: rgba(43, 110, 78, 0.08); }
+        .step-number { width: 52px; height: 52px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: white; flex-shrink: 0; }
+        .step-content h4 { font-size: 0.9rem; margin-bottom: 8px; color: #2b6e4e; font-weight: 700; }
+        body.dark .step-content h4 { color: #3d9b6d; }
+        .step-content p { font-size: 0.65rem; line-height: 1.5; opacity: 0.8; margin-bottom: 8px; }
+        .step-detail { font-size: 0.55rem; color: #e0a343; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+        
+        .disaster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .disaster-card { border-radius: 24px; padding: 20px; transition: all 0.3s ease; border: 1px solid rgba(43, 110, 78, 0.15); cursor: pointer; display: flex; gap: 18px; align-items: center; }
+        .disaster-card:hover { transform: translateX(6px); border-color: #2b6e4e; background: rgba(43, 110, 78, 0.08); }
+        .disaster-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #2b6e4e20, #3d9b6d20); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .disaster-info h4 { font-size: 0.9rem; margin-bottom: 6px; font-weight: 700; }
+        .disaster-info p { font-size: 0.6rem; opacity: 0.75; line-height: 1.4; }
+        
+        .kit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+        .kit-card { border-radius: 24px; padding: 20px; text-align: center; transition: all 0.3s ease; border: 1px solid rgba(43, 110, 78, 0.15); cursor: pointer; }
+        .kit-card:hover { transform: translateY(-6px); border-color: #2b6e4e; background: rgba(43, 110, 78, 0.08); }
+        .kit-card i { font-size: 2.2rem; margin-bottom: 12px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .kit-card h5 { font-size: 0.85rem; margin-bottom: 8px; font-weight: 700; }
+        .kit-card p { font-size: 0.55rem; opacity: 0.7; line-height: 1.4; }
+        
+        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+        .tips-card { border-radius: 24px; padding: 22px; transition: all 0.3s ease; border: 1px solid rgba(43, 110, 78, 0.15); cursor: pointer; text-align: center; }
+        .tips-card:hover { transform: translateY(-5px); border-color: #2b6e4e; background: rgba(43, 110, 78, 0.08); }
+        .tips-card i { font-size: 1.8rem; margin-bottom: 12px; color: #e0a343; }
+        .tips-card h5 { font-size: 0.8rem; margin-bottom: 8px; font-weight: 700; }
+        .tips-card p { font-size: 0.55rem; opacity: 0.7; line-height: 1.4; }
+        
+        .contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .contact-card { border-radius: 24px; padding: 20px; transition: all 0.3s ease; border: 1px solid rgba(43, 110, 78, 0.15); cursor: pointer; display: flex; align-items: center; gap: 18px; background: rgba(0,0,0,0.02); }
+        .contact-card:hover { transform: translateX(6px); border-color: #2b6e4e; background: rgba(43, 110, 78, 0.08); }
+        .contact-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #2b6e4e20, #3d9b6d20); border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #2b6e4e; flex-shrink: 0; }
+        .contact-info { flex: 1; }
+        .contact-info h4 { font-size: 1rem; margin-bottom: 4px; font-weight: 800; color: #2b6e4e; }
+        body.dark .contact-info h4 { color: #3d9b6d; }
+        .contact-info p { font-size: 0.65rem; opacity: 0.75; margin-bottom: 6px; line-height: 1.4; }
+        .contact-number { font-weight: 800; font-size: 1.1rem; color: #2b6e4e; letter-spacing: 0.5px; display: inline-block; background: rgba(43,110,78,0.15); padding: 4px 12px; border-radius: 30px; }
+        body.dark .contact-number { color: #3d9b6d; background: rgba(61,155,109,0.2); }
+        
+        .info-card { border-radius: 20px; padding: 16px; margin-top: 20px; border-left: 4px solid #2b6e4e; background: rgba(43, 110, 78, 0.06); }
+        .info-card p { font-size: 0.6rem; margin: 8px 0; line-height: 1.5; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); backdrop-filter: blur(24px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { border-radius: 40px; max-width: 620px; width: 90%; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(43, 110, 78, 0.5); animation: modalPop 0.35s cubic-bezier(0.34, 1.2, 0.64, 1); }
+        @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(43, 110, 78, 0.3); }
+        .modal-header h3 { font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .close-modal { cursor: pointer; font-size: 1.5rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
+        .close-modal:hover { background: rgba(43, 110, 78, 0.15); transform: rotate(90deg); }
+        .modal-body { padding: 28px; }
+        .detail-card { border-radius: 24px; padding: 20px; margin-bottom: 16px; background: rgba(0,0,0,0.04); line-height: 1.7; font-size: 0.85rem; }
+        .btn-modal { padding: 14px; border-radius: 50px; width: 100%; cursor: pointer; font-weight: 700; border: none; margin-top: 10px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); color: white; transition: 0.2s; }
+        .btn-modal:hover { transform: scale(0.98); opacity: 0.95; }
+        
+        .toast { position: fixed; bottom: 28px; left: 28px; backdrop-filter: blur(20px); padding: 12px 24px; border-radius: 60px; z-index: 200; animation: slideInLeft 0.3s ease; border-left: 5px solid #2b6e4e; font-size: 0.8rem; font-weight: 600; }
+        body.dark .toast { background: #1e2a24; color: #d1e6dc; }
+        body.light .toast { background: #ffffff; color: #2b6e4e; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        @keyframes slideInLeft { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        @media (max-width: 1200px) { .risk-levels { grid-template-columns: repeat(3, 1fr); } .contact-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 992px) { .risk-levels { grid-template-columns: 1fr; } .contact-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { 
+            .sidebar { width: 80px; padding: 24px 12px; } 
+            .logo-text, .logo-small, .nav-link span, .theme-toggle span { display: none; } 
+            .logo-icon { margin: 0 auto; transform: scale(0.9); } 
+            .nav-link { justify-content: center; padding: 12px; } 
+            .nav-link i { font-size: 1.3rem; } 
+            .theme-toggle { justify-content: center; padding: 12px; } 
+            .main-content { margin-left: 80px; padding: 16px 20px; } 
+            .top-bar { flex-direction: column; text-align: center; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .kit-grid { grid-template-columns: repeat(2, 1fr); }
+            .disaster-grid { grid-template-columns: 1fr; }
+            .tips-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .hero-section h1 { font-size: 1.3rem; }
+            .risk-card { padding: 20px; }
+            .contact-icon { width: 50px; height: 50px; font-size: 1.3rem; }
+            .contact-number { font-size: 0.9rem; }
+        }
+        @media (max-width: 480px) {
+            .main-content { padding: 12px 16px; }
+            .glass-card { padding: 18px; }
+            .kit-grid { grid-template-columns: 1fr; }
+            .contact-card { padding: 15px; gap: 12px; }
+            .contact-icon { width: 45px; height: 45px; font-size: 1.1rem; }
+            .contact-info h4 { font-size: 0.85rem; }
+            .contact-number { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body class="dark">
+<div class="bg-gradient"></div>
+
+<div style="display: flex; min-height: 100vh;">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-haltered"></i></div>
+            <div>
+                <div class="logo-text">INA-PREDICT</div>
+                <div class="logo-small">EARLY WARNING SYSTEM</div>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="prediksi.html"><i class="fas fa-chart-line"></i><span>Prediksi Bencana</span></a></div>
+            <div class="nav-item"><a class="nav-link active" href="panduan.html"><i class="fas fa-hand-holding-heart"></i><span>Panduan Aksi</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="kontak.html"><i class="fas fa-phone-alt"></i><span>Kontak Darurat</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="donasi.html"><i class="fas fa-hand-holding-usd"></i><span>Donasi</span></a></div>
+            <div class="nav-item"><a class="nav-link active" href="chatbot.html"><i class="fas fa-robot"></i><span>INA-BOT AI</span></a></div>
+            <div class="nav-item"><a class="nav-link" href="hubungikami.html"><i class="fas fa-envelope"></i><span>Hubungi Kami</span></a></div>
+        </div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-sun"></i>
+            <span>Dark / Light Mode</span>
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="update-time"><i class="fas fa-clock"></i> Update: <span id="lastUpdate"></span><br>Data BNPB - BMKG - BPBD</div>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div>
+                <h2><i class="fas fa-hand-holding-heart"></i> PANDUAN LENGKAP TANGGAP DARURAT</h2>
+                <p>Pedoman resmi BNPB • Langkah penyelamatan diri • Informasi terkini 24/7</p>
+            </div>
+            <div class="alert-status" onclick="showToast('SIAGA BENCANA 24 JAM | Hubungi 112 untuk darurat')">
+                <i class="fas fa-bell"></i> SIAGA 24 JAM
+            </div>
+        </div>
+
+        <div class="hero-section">
+            <h1><i class="fas fa-book-open"></i> PANDUAN KESIAPSIAGAAN BENCANA</h1>
+            <p>Kenali risiko, pahami langkah-langkah keselamatan, dan lindungi diri serta keluarga Anda dari ancaman bencana. Dokumen ini disusun berdasarkan Standar Operasional Prosedur (SOP) BNPB dan rekomendasi internasional UNDRR.</p>
+            <div class="ai-badge" style="margin-top: 18px; display: inline-block; padding: 8px 24px;"><i class="fas fa-check-circle"></i> Pedoman Resmi BNPB & BMKG • Terverifikasi 2026</div>
+        </div>
+
+        <!-- RISK LEVELS - DESKRIPSI LENGKAP -->
+        <div class="risk-levels">
+            <div class="risk-card high" onclick='showDetail("🔴 RISIKO TINGGI (≥75%) - STATUS DARURAT", "<strong>🔴 TINDAKAN DARURAT UNTUK RISIKO TINGGI</strong><br><br>⚠️ <strong>KAPAN STATUS INI BERLAKU?</strong><br>Ketika prediksi menunjukkan potensi bencana lebih dari 75% dalam 24 jam ke depan. Biasanya disebabkan oleh: curah hujan ekstrem (>150mm/hari), gempa dengan magnitudo >6.0 SR, atau aktivitas gunung api level III-IV (AWAS).<br><br>📌 <strong>YANG HARUS SEGERA DILAKUKAN (JANGAN TUNDA!):</strong><br>✔️ <strong>Evakuasi segera</strong> ke tempat aman terdekat (tempat evakuasi sementara/TES)<br>✔️ <strong>Bawa tas darurat</strong> yang sudah disiapkan sebelumnya (jangan tinggalkan)<br>✔️ <strong>Ikuti instruksi</strong> dari BPBD dan petugas di lapangan<br>✔️ <strong>Jauhi area rawan</strong>: lereng curam, bantaran sungai, pantai, bawah pohon besar, tiang listrik<br>✔️ <strong>Hubungi hotline 112</strong> untuk bantuan darurat jika terjebak atau butuh evakuasi<br>✔️ <strong>Matikan listrik dan gas</strong> sebelum meninggalkan rumah (jika memungkinkan)<br><br>📌 <strong>HAL YANG TIDAK BOLEH DILAKUKAN:</strong><br>✖️ Jangan panik dan berlari tanpa arah - ini bisa menyebabkan cedera<br>✖️ Jangan kembali ke rumah sebelum dinyatakan aman oleh petugas<br>✖️ Jangan menyeberangi genangan banjir (arus bisa menyapu dengan kecepatan tinggi)<br>✖️ Jangan menyebarkan hoaks atau informasi tidak jelas di media sosial<br>✖️ Jangan menggunakan lift saat gempa atau kebakaran<br><br>📌 <strong>SETELAH KONDISI AMAN:</strong><br>📍 Laporkan diri ke posko pengungsian terdekat untuk didata<br>📍 Cek kondisi keluarga dan tetangga - bantu yang membutuhkan<br>📍 Ikuti arahan untuk proses pemulihan dari petugas<br>📍 Jangan menyebarkan rumor yang dapat memicu kepanikan massal")'>
+                <div class="risk-icon"><i class="fas fa-chart-column"></i></div>
+                <h4 style="color:#e07a5f;">RISIKO TINGGI ≥75%</h4>
+                <p>⚠️ STATUS DARURAT - Potensi bencana besar dalam 24 jam. Segera evakuasi ke tempat aman. Ikuti instruksi petugas. Jangan menunda!</p>
+                <span class="risk-badge high"><i class="fas fa-exclamation-triangle"></i> DARURAT - SEGERA EVAKUASI</span>
+            </div>
+            <div class="risk-card medium" onclick='showDetail("🟠 RISIKO SEDANG (50-74%) - STATUS SIAGA", "<strong>🟠 TINDAKAN SIAGA UNTUK RISIKO SEDANG</strong><br><br>⚠️ <strong>KAPAN STATUS INI BERLAKU?</strong><br>Ketika prediksi menunjukkan potensi bencana 50-74% dalam 2-3 hari ke depan. Faktor penyebab: hujan lebat (75-120mm/hari), angin kencang 40-60 km/jam, aktivitas seismik sedang, atau kenaikan level gunung api.<br><br>📌 <strong>YANG HARUS DILAKUKAN (SIAGA PENUH):</strong><br>✔️ <strong>Tingkatkan kewaspadaan</strong> dan pantau info resmi setiap 2 jam (via TV, radio, BMKG Mobile)<br>✔️ <strong>Hindari area rawan</strong> longsor, banjir, pohon besar, dan papan reklame saat hujan deras<br>✔️ <strong>Cek jalur evakuasi</strong> terdekat dari rumah dan tempat kerja - pastikan tidak terhalang<br>✔️ <strong>Siapkan perlengkapan darurat</strong> di tempat mudah dijangkau (dekat pintu keluar)<br>✔️ <strong>Simpan nomor darurat</strong> di ponsel dan tulis di kertas (cadangan jika ponsel mati)<br>✔️ <strong>Informasikan kepada keluarga</strong> tentang rencana evakuasi dan titik kumpul<br><br>📌 <strong>PERSIAPAN KHUSUS:</strong><br>📦 Isi ulang tas darurat dengan makanan dan air bersih yang cukup untuk 3 hari<br>🔋 Charge penuh power bank, baterai cadangan, dan ponsel semua anggota keluarga<br>📻 Siapkan radio baterai untuk update info jika listrik dan internet padam<br>🚪 Pastikan pintu, jendela, dan ventilasi dalam kondisi baik dan tertutup rapat<br><br>📌 <strong>UNTUK KELUARGA:</strong><br>👨‍👩‍👧‍👦 Diskusikan ulang rencana evakuasi dengan semua anggota keluarga<br>🐾 Siapkan kandang atau rencana untuk hewan peliharaan (jika ada)<br>💊 Siapkan obat-obatan khusus jika ada anggota keluarga dengan penyakit kronis")'>
+                <div class="risk-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <h4 style="color:#e0a343;">RISIKO SEDANG 50-74%</h4>
+                <p>⚠️ STATUS SIAGA - Potensi bencana signifikan dalam 2-3 hari. Tingkatkan kewaspadaan dan pantau informasi setiap 2 jam.</p>
+                <span class="risk-badge medium"><i class="fas fa-eye"></i> SIAGA - PANTAU INFO</span>
+            </div>
+            <div class="risk-card low" onclick='showDetail("🟢 RISIKO RENDAH (<50%) - STATUS NORMAL", "<strong>🟢 TINDAKAN SIAGA RENDAH (NORMAL TAPI SIAGA)</strong><br><br>⚠️ <strong>KAPAN STATUS INI BERLAKU?</strong><br>Ketika prediksi menunjukkan potensi bencana kurang dari 50% dalam 7 hari ke depan. Kondisi cuaca normal, aktivitas seismik rendah, dan gunung api di level normal.<br><br>📌 <strong>TETAP SIAGA - JANGAN LENGAH:</strong><br>✔️ <strong>Jangan lengah</strong> meskipun risiko rendah - bencana bisa datang tiba-tiba tanpa peringatan<br>✔️ <strong>Persiapkan perlengkapan darurat</strong> di rumah untuk antisipasi jika terjadi keadaan darurat<br>✔️ <strong>Update informasi rutin</strong> melalui BMKG, BNPB, atau aplikasi resmi minimal seminggu sekali<br>✔️ <strong>Ikuti sosialisasi kebencanaan</strong> di lingkungan Anda - banyak belajar dari pengalaman<br>✔️ <strong>Download aplikasi early warning</strong> seperti INA-RISK dan BMKG Mobile di ponsel<br><br>📌 <strong>REKOMENDASI PERSIAPAN JANGKA PANJANG:</strong><br>🏠 <strong>Cek kondisi rumah</strong> secara berkala - periksa atap, fondasi, instalasi listrik, dan gas<br>📋 <strong>Buat rencana evakuasi keluarga</strong> dan tentukan minimal 2 titik kumpul yang berbeda<br>🎒 <strong>Siapkan tas darurat</strong> di tempat strategis dekat pintu keluar utama dan pintu belakang<br>📝 <strong>Dokumentasikan aset penting</strong> (foto rumah, barang berharga, dokumen) sebagai arsip<br><br>📌 <strong>LATIHAN BERKALA:</strong><br>📅 Lakukan simulasi evakuasi minimal 2 kali dalam setahun (misal: Januari dan Juli)<br>👨‍👩‍👧‍👦 Libatkan seluruh anggota keluarga termasuk anak-anak dalam latihan<br>📞 Ajari anak cara menghubungi nomor darurat 112 dan menyebutkan alamat rumah")'>
+                <div class="risk-icon"><i class="fas fa-check-circle"></i></div>
+                <h4 style="color:#3d9b6d;">RISIKO RENDAH <50%</h4>
+                <p>✅ STATUS NORMAL - Kondisi relatif aman. Tetap waspada dan persiapkan diri untuk menghadapi kemungkinan terburuk. Jangan lengah!</p>
+                <span class="risk-badge low"><i class="fas fa-shield-alt"></i> NORMAL - TETAP SIAGA</span>
+            </div>
+        </div>
+
+        <!-- LANGKAH SIAGA - DESKRIPSI LENGKAP -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h3><i class="fas fa-clipboard-list"></i> 📋 LANGKAH-LANGKAH SIAGA BENCANA</h3>
+                <span style="font-size:0.55rem;"><i class="fas fa-mouse-pointer"></i> Klik untuk panduan detail</span>
+            </div>
+            <div class="steps-grid" id="stepsGrid"></div>
+        </div>
+
+        <!-- JENIS BENCANA - DESKRIPSI LENGKAP -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h3><i class="fas fa-water"></i> 🌊 JENIS-JENIS BENCANA & CARA PENANGANAN</h3>
+                <span style="font-size:0.55rem;"><i class="fas fa-mouse-pointer"></i> Klik untuk panduan spesifik</span>
+            </div>
+            <div class="disaster-grid" id="disasterGrid"></div>
+        </div>
+
+        <!-- TAS DARURAT - DESKRIPSI LENGKAP -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h3><i class="fas fa-backpack"></i> 🎒 TAS DARURAT LENGKAP (UNTUK 3 HARI)</h3>
+                <span style="font-size:0.55rem;"><i class="fas fa-mouse-pointer"></i> Klik untuk detail fungsi dan cara penggunaan</span>
+            </div>
+            <div class="kit-grid" id="kitGrid"></div>
+            <div class="info-card">
+                <p><i class="fas fa-lightbulb"></i> <strong>Tips Penting:</strong> Simpan tas darurat di tempat yang mudah dijangkau dekat pintu keluar utama dan pintu belakang. Periksa isinya setiap 3 bulan sekali. Ganti makanan dan air setiap 6 bulan. Cek tanggal kadaluarsa obat-obatan secara rutin. Gunakan tas ransel yang kuat dan tahan air agar mudah dibawa saat evakuasi.</p>
+                <p><i class="fas fa-sync-alt"></i> <strong>Checklist Bulanan:</strong> ✅ Baterai cadangan ✅ Makanan kaleng (cek kadaluarsa) ✅ Air minum (ganti jika sudah 6 bulan) ✅ Obat P3K (tambah jika habis) ✅ Dokumen penting ✅ Uang tunai (ganti jika sudah lama)</p>
+                <p><i class="fas fa-weight-hanging"></i> <strong>Tips Beban:</strong> Usahakan berat total tas darurat tidak lebih dari 10-15 kg agar mudah dibawa saat evakuasi darurat. Prioritaskan barang yang paling penting dan ringan.</p>
+            </div>
+        </div>
+
+        <!-- TIPS - DESKRIPSI LENGKAP -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h3><i class="fas fa-lightbulb"></i> 💡 TIPS & TRIK KESELAMATAN</h3>
+                <span style="font-size:0.55rem;"><i class="fas fa-mouse-pointer"></i> Klik untuk tips lengkap</span>
+            </div>
+            <div class="tips-grid" id="tipsGrid"></div>
+        </div>
+
+        <!-- KONTAK DARURAT - DESKRIPSI LENGKAP -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h3><i class="fas fa-phone-alt"></i> 📞 KONTAK DARURAT 24 JAM</h3>
+                <span style="font-size:0.55rem;"><i class="fas fa-mouse-pointer"></i> Klik untuk detail layanan dan cara menghubungi</span>
+            </div>
+            <div class="contact-grid" id="contactGrid"></div>
+            <div class="info-card">
+                <p><i class="fab fa-whatsapp"></i> <strong>WhatsApp Center BNPB:</strong> 0811-1234-5678 (24 jam, chat saja untuk laporan cepat dan foto lokasi bencana)</p>
+                <p><i class="fas fa-globe"></i> <strong>Website Resmi:</strong> www.bnpb.go.id | www.bmkg.go.id | www.bpbd.go.id (untuk informasi lengkap dan data kebencanaan)</p>
+                <p><i class="fab fa-twitter"></i> <strong>Twitter @BNPB_Indonesia & @infoBMKG</strong> untuk update cepat, peringatan dini, dan info terkini setiap saat</p>
+                <p><i class="fab fa-instagram"></i> <strong>Instagram @bnpb_indonesia</strong> untuk informasi visual, edukasi kebencanaan, dan video tutorial</p>
+                <p><i class="fab fa-youtube"></i> <strong>YouTube BNPB Indonesia</strong> untuk video edukasi, simulasi evakuasi, dan dokumentasi tanggap darurat</p>
+            </div>
+        </div>
+
+        <!-- APLIKASI & SUMBER DAYA -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h3><i class="fas fa-mobile-alt"></i> 📱 APLIKASI & SUMBER DAYA PENDUKUNG</h3>
+            </div>
+            <div class="info-card" style="margin-top:0;">
+                <p><i class="fas fa-map-marked-alt"></i> <strong>INA-RISK (BNPB):</strong> Aplikasi pemetaan risiko bencana Indonesia. Tersedia gratis di Play Store & App Store. Fitur: cek tingkat risiko daerah Anda, lokasi titik evakuasi terdekat, dan kontak darurat daerah.</p>
+                <p><i class="fas fa-cloud-sun-rain"></i> <strong>BMKG Mobile:</strong> Informasi cuaca real-time, peringatan dini tsunami (dalam hitungan menit setelah gempa), gempa bumi terkini, dan prakiraan cuaca 7 hari ke depan. Wajib dimiliki!</p>
+                <p><i class="fas fa-church"></i> <strong>Titik Kumpul Evakuasi:</strong> Kenali minimal 3 titik evakuasi terdekat: (1) Lapangan terbuka minimal 500m dari pemukiman, (2) Gedung pusat pemerintahan yang kokoh, (3) Sekolah atau masjid terdekat yang aman</p>
+                <p><i class="fas fa-users"></i> <strong>Latihan Evakuasi:</strong> Lakukan simulasi evakuasi bersama keluarga minimal 2 kali dalam setahun. Waktu terbaik: bulan Januari dan Juli. Latih anak-anak untuk tidak panik dan mengikuti jalur evakuasi.</p>
+                <p><i class="fas fa-volume-up"></i> <strong>Sistem Peringatan Dini (EWS):</strong> Jika mendengar sirine panjang (3 menit terus-menerus), itu adalah peringatan darurat - segera cek info resmi melalui radio atau ponsel dan bersiap evakuasi. Jika sirine putus-putus (10 detik), itu pertanda uji coba sistem.</p>
+                <p><i class="fas fa-first-aid"></i> <strong>Pelatihan P3K dan PPGD:</strong> Ikuti pelatihan Pertolongan Pertama Pada Gawat Darurat (PPGD) dari PMI atau BPBD setempat. Pengetahuan ini sangat berharga dalam menyelamatkan nyawa.</p>
+            </div>
+        </div>
+
+        <div style="text-align:center; font-size:0.45rem; opacity:0.5; margin-top:16px; padding:12px;">
+            <i class="fas fa-shield-alt"></i> Sumber: BNPB | BMKG | BPBD | PMI | UNDRR | Panduan Resmi Kesiapsiagaan Bencana Indonesia 2026
+        </div>
+    </main>
+</div>
+
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Detail Panduan</h3>
+            <div class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+function toggleTheme() {
+    if(document.body.classList.contains('dark')) {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        localStorage.setItem('theme', 'light');
+        showToast('🌞 Light mode aktif | Tampilan terang');
+    } else {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        showToast('🌙 Dark mode aktif | Tampilan gelap');
+    }
+}
+
+if(localStorage.getItem('theme') === 'light') {
+    document.body.classList.remove('dark');
+    document.body.classList.add('light');
+}
+
+function showDetail(title, content) {
+    document.getElementById('modalTitle').innerHTML = title;
+    document.getElementById('modalBody').innerHTML = '<div class="detail-card">' + content.replace(/\n/g,'<br>') + '</div><button class="btn-modal" onclick="closeModal()"><i class="fas fa-check-circle"></i> Tutup Panduan</button>';
+    document.getElementById('detailModal').style.display = 'flex';
+}
+
+function closeModal() { 
+    document.getElementById('detailModal').style.display = 'none'; 
+}
+
+function showToast(msg) { 
+    var t = document.createElement('div'); 
+    t.className = 'toast'; 
+    t.innerHTML = '<i class="fas fa-bell"></i> ' + msg; 
+    document.body.appendChild(t); 
+    setTimeout(function() { t.remove(); }, 2800); 
+}
+
+// DATA LENGKAP DENGAN DESKRIPSI YANG SANGAT DETAIL
+var stepsData = [
+    { num: 1, title: "PERSIAPAN SEBELUM BENCANA", short: "Siapkan tas darurat, kenali jalur evakuasi, buat rencana komunikasi keluarga.", long: "<strong>📋 PERSIAPAN SEBELUM BENCANA - LANGKAH DETAIL</strong><br><br>✅ <strong>PERSIAPAN TAS DARURAT:</strong><br>• Siapkan tas ransel yang kuat, kedap air, dan nyaman dipakai<br>• Isi dengan air minum (minimal 3 liter per orang untuk 3 hari)<br>• Sertakan makanan tahan lama (kaleng, biskuit, energy bar, mi instan)<br>• Masukkan P3K lengkap, obat-obatan pribadi untuk 7 hari<br>• Siapkan senter, baterai cadangan, power bank, dan radio portabel<br>• Dokumen penting (KK, KTP, sertifikat tanah) dalam plastik kedap air<br>• Uang tunai pecahan kecil dan besar (minimal Rp500.000)<br><br>✅ <strong>KENALI LINGKUNGAN DAN RISIKO:</strong><br>• Pelajari peta rawan bencana di daerah Anda (bisa diakses via INA-RISK)<br>• Identifikasi minimal 3 jalur evakuasi berbeda dari rumah ke titik kumpul<br>• Tentukan titik kumpul keluarga (TK) di tempat yang aman dan mudah dijangkau<br>• Catat lokasi posko bencana, rumah sakit, dan kantor BPBD terdekat<br><br>✅ <strong>RENCANA KOMUNIKASI KELUARGA:</strong><br>• Buat daftar kontak darurat (keluarga, tetangga, BPBD, rumah sakit)<br>• Tentukan 1 orang kontak di luar kota sebagai penghubung jika komunikasi terganggu<br>• Ajari anak cara menghubungi nomor darurat 112 dan menyebutkan alamat rumah<br>• Simpan salinan daftar kontak di tas darurat dan di ponsel<br><br>✅ <strong>PERSIAPAN RUMAH:</strong><br>• Pastikan furnitur berat terpasang ke dinding (lemari, rak buku)<br>• Simpan barang mudah pecah di tempat rendah dan aman<br>• Kenali cara mematikan gas, listrik, dan air di rumah<br>• Perkuat struktur rumah jika berada di zona rawan gempa" },
+    { num: 2, title: "KETIKA PERINGATAN DINI", short: "Pantau info resmi BMKG/BNPB, amankan barang, bersiap evakuasi.", long: "<strong>📋 KETIKA PERINGATAN DINI DITERIMA - LANGKAH DETAIL</strong><br><br>✅ <strong>HAL YANG HARUS SEGERA DILAKUKAN:</strong><br>• Tetap tenang dan jangan panik - panik adalah musuh utama<br>• Pantau informasi dari sumber resmi (BMKG, BNPB, TV nasional, radio publik)<br>• Jangan percaya pada hoaks atau informasi tidak jelas di media sosial<br>• Matikan aliran listrik, gas, dan air di rumah sebelum meninggalkan rumah<br>• Amankan barang-barang berharga ke tempat yang lebih tinggi (jika banjir)<br>• Bawa tas darurat dan berkas penting yang sudah disiapkan<br>• Bersiap untuk evakuasi jika diperintahkan oleh petugas<br><br>✅ <strong>PERSIAPAN EVAKUASI:</strong><br>• Kenakan pakaian yang sesuai (jaket, sepatu, topi)<br>• Informasikan rencana evakuasi kepada seluruh anggota keluarga<br>• Pastikan anak-anak dan lansia siap untuk dievakuasi<br>• Bawa hewan peliharaan jika memungkinkan (dengan kandang/ carrier)<br>• Tutup rapat jendela dan pintu rumah sebelum pergi<br><br>✅ <strong>JANGAN LAKUKAN:</strong><br>✖️ Jangan menyebarkan informasi yang belum terverifikasi<br>✖️ Jangan menggunakan lift saat evakuasi (gunakan tangga darurat)<br>✖️ Jangan berhenti di bawah jembatan atau pohon besar saat hujan deras<br>✖️ Jangan kembali ke rumah untuk mengambil barang yang tertinggal" },
+    { num: 3, title: "SAAT BENCANA TERJADI", short: "Tetap tenang, lindungi kepala, cari tempat aman, ikuti instruksi.", long: "<strong>📋 SAAT BENCANA TERJADI - LANGKAH DETAIL</strong><br><br>✅ <strong>SAAT GEMPA BUMI:</strong><br>• DROP: Jatuhkan tubuh ke lantai dengan posisi merunduk<br>• COVER: Lindungi kepala dan leher di bawah meja atau dengan tangan<br>• HOLD ON: Pegang kaki meja atau kursi sampai gempa berhenti<br>• Jauhi jendela, cermin, rak buku, lemari yang bisa jatuh<br>• Jika di luar ruangan, jauhi bangunan, tiang listrik, pohon besar, papan reklame<br>• Jika di kendaraan, berhenti di tempat terbuka, jauhi jembatan dan terowongan<br><br>✅ <strong>SAAT BANJIR:</strong><br>• Segera pindah ke tempat yang lebih tinggi (minimal lantai 2 rumah atau bukit terdekat)<br>• Jangan mencoba berjalan atau berenang di air banjir - arus bisa menyapu dengan kecepatan tinggi<br>• Matikan aliran listrik sebelum meninggalkan rumah jika air mulai masuk<br>• Hindari jembatan yang terendam air - bisa roboh sewaktu-waktu<br>• Waspada bahaya tersengat listrik dari kabel yang putus terendam air<br><br>✅ <strong>SAAT TANAH LONGSOR:</strong><br>• Perhatikan tanda-tanda awal: retakan tanah, pohon miring, suara gemuruh<br>• Segera tinggalkan area jika mendengar suara tidak biasa dari arah bukit<br>• Berlari ke arah samping (menjauhi jalur longsor) - jangan berlari ke bawah bukit<br>• Cari perlindungan di balik bongkahan batu besar atau pohon kokoh<br>• Jangan kembali ke rumah sampai dinyatakan aman oleh petugas<br><br>✅ <strong>SAAT KEBAKARAN HUTAN/LAHAN:</strong><br>• Kenakan masker N95 untuk melindungi pernapasan dari kabut asap<br>• Tutup rapat semua jendela dan pintu rumah untuk mencegah asap masuk<br>• Basahi kain dan letakkan di sela-sela pintu/jendela<br>• Evakuasi ke area yang tidak terdampak asap jika kualitas udara memburuk<br>• Ikuti arahan evakuasi dari petugas" },
+    { num: 4, title: "SETELAH BENCANA", short: "Cek kondisi sekitar, hindari area berbahaya, dengarkan info resmi.", long: "<strong>📋 SETELAH BENCANA - LANGKAH DETAIL</strong><br><br>✅ <strong>HAL YANG HARUS DILAKUKAN:</strong><br>• Periksa apakah ada anggota keluarga yang terluka, beri pertolongan pertama jika bisa<br>• Jauhi area yang rusak, reruntuhan bangunan, dan kabel listrik putus<br>• Dengarkan radio atau TV untuk informasi resmi dari pemerintah dan BPBD<br>• Jangan menyebarkan rumor, hoaks, atau informasi tidak jelas - ini bisa memicu kepanikan<br>• Gunakan pesan teks (SMS/WhatsApp) daripada telepon untuk menghemat baterai dan bandwidth<br>• Cek kondisi tetangga dan bantu mereka yang membutuhkan (jika aman)<br><br>✅ <strong>KEMBALI KE RUMAH:</strong><br>• Jangan masuk ke rumah yang rusak parah - bisa roboh sewaktu-waktu<br>• Periksa kebocoran gas dengan mencium bau - jangan gunakan korek api atau menyalakan lampu<br>• Dokumentasikan kerusakan dengan foto untuk klaim asuransi<br>• Buang semua makanan dan air yang terkontaminasi atau sudah kedaluwarsa<br>• Bersihkan rumah dari lumpur dan puing-puing dengan perlengkapan pelindung (sarung tangan, masker)<br><br>✅ <strong>KESEHATAN MENTAL:</strong><br>• Trauma adalah hal yang wajar setelah bencana - jangan ragu mencari bantuan konseling<br>• Bicarakan pengalaman dengan keluarga atau teman - jangan dipendam sendiri<br>• Dampingi anak-anak dalam memproses pengalaman mereka<br>• Ikuti program pemulihan psikososial jika tersedia di pengungsian" },
+    { num: 5, title: "DI TEMPAT PENGUNGSIAN", short: "Laporkan diri ke posko, jaga kebersihan, ikuti arahan petugas.", long: "<strong>📋 DI TEMPAT PENGUNGSIAN - LANGKAH DETAIL</strong><br><br>✅ <strong>YANG HARUS DILAKUKAN SAAT TIBA DI PENGUNGSIAN:</strong><br>• Laporkan diri dan seluruh anggota keluarga ke petugas posko pengungsian<br>• Isi data pengungsi dengan lengkap dan jujur (nama, usia, kondisi kesehatan)<br>• Dapatkan nomor identitas pengungsi jika ada - simpan dengan baik<br>• Cari tempat yang aman dan nyaman untuk beristirahat bersama keluarga<br>• Jaga kebersihan diri dan lingkungan sekitar - buang sampah pada tempatnya<br><br>✅ <strong>KESEHATAN DI PENGUNGSIAN:</strong><br>• Gunakan air bersih yang disediakan untuk minum, masak, dan mencuci<br>• Konsumsi makanan bergizi yang disediakan - jangan pilih-pilih<br>• Jaga jarak dengan pengungsi lain jika ada gejala penyakit menular<br>• Segera laporkan ke petugas jika ada anggota keluarga yang sakit (demam, diare, batuk)<br>• Minum obat rutin tepat waktu (untuk penyakit kronis seperti hipertensi, diabetes)<br><br>✅ <strong>TIPS BERTAHAN DI PENGUNGSIAN:</strong><br>• Bantu sesama pengungsi yang lebih membutuhkan (lansia, ibu hamil, anak-anak)<br>• Jaga kekompakan dan hindari konflik dengan sesama pengungsi<br>• Ikut serta dalam kegiatan positif di pengungsian (gotong royong, pengajian, dll)<br>• Tenangkan anak-anak yang mungkin ketakutan atau bingung<br>• Simpan barang berharga di tempat yang aman dan selalu dalam pengawasan<br>• Jangan keluar dari area pengungsian tanpa izin petugas" },
+    { num: 6, title: "PEMULIHAN PASCA BENCANA", short: "Ikuti program pemulihan pemerintah, bangun kembali rumah lebih aman.", long: "<strong>📋 PEMULIHAN PASCA BENCANA - LANGKAH DETAIL</strong><br><br>✅ <strong>PROGRAM PEMULIHAN DARI PEMERINTAH:</strong><br>• Ikuti program pemulihan dari pemerintah (BPBD, Dinas Sosial, Dinas PUPR)<br>• Daftarkan diri untuk mendapatkan bantuan rehabilitasi rumah jika memenuhi syarat<br>• Dapatkan layanan konseling jika mengalami trauma pasca bencana (gratis di puskesmas)<br>• Ikuti program pelatihan keterampilan jika tersedia untuk memulihkan mata pencaharian<br>• Manfaatkan bantuan modal usaha jika ada program dari pemerintah atau LSM<br><br>✅ <strong>MEMBANGUN KEMBALI YANG LEBIH BAIK:</strong><br>• Bangun kembali rumah dengan konstruksi yang lebih tahan bencana (tahan gempa, tahan banjir)<br>• Konsultasikan desain rumah dengan ahli konstruksi yang memahami mitigasi bencana<br>• Gunakan material yang berkualitas dan sesuai standar bangunan tahan bencana<br>• Bangun di lokasi yang aman dari ancaman bencana (jauhi bantaran sungai, lereng curam)<br>• Sertakan fitur keselamatan: jalur evakuasi, titik kumpul, tempat penyimpanan dokumen<br><br>✅ <strong>PEMBELAJARAN DAN PERSIAPAN MASA DEPAN:</strong><br>• Evaluasi kesiapsiagaan keluarga saat menghadapi bencana - apa yang kurang?<br>• Perbaiki kekurangan dalam rencana evakuasi dan tas darurat berdasarkan pengalaman<br>• Tingkatkan pengetahuan tentang kebencanaan melalui pelatihan dan sosialisasi<br>• Bagikan pengalaman untuk mengedukasi orang lain dan komunitas sekitar<br>• Bergabung dengan komunitas tangguh bencana di lingkungan Anda" }
+];
+
+var disasterData = [
+    { icon: "fas fa-house-crack", name: "Gempa Bumi", short: "DROP, COVER, HOLD ON. Jauhi bangunan, tiang listrik, dan pohon besar.", long: "<strong>🌋 PANDUAN LENGKAP SAAT GEMPA BUMI</strong><br><br>📍 <strong>DI DALAM RUANGAN (DROP, COVER, HOLD ON):</strong><br>• DROP: Jatuhkan tubuh ke lantai dengan posisi merunduk - jangan berdiri tegak<br>• COVER: Lindungi kepala dan leher di bawah meja kokoh atau dengan tangan dan lengan<br>• HOLD ON: Pegang kaki meja atau kursi sampai guncangan gempa benar-benar berhenti<br>• Jauhi jendela, cermin, rak buku, lemari, lampu gantung, dan benda yang bisa jatuh<br>• Jangan berlari ke luar saat gempa masih berlangsung - banyak cedera terjadi karena tertimpa reruntuhan<br>• Jika tidak ada meja, berlindung di sudut ruangan dengan posisi merunduk dan lindungi kepala<br><br>📍 <strong>DI LUAR RUANGAN:</strong><br>• Jauhi bangunan, tiang listrik, pohon besar, papan reklame, dan jembatan layang<br>• Cari tempat terbuka yang aman seperti lapangan atau taman - minimal 10 meter dari bangunan<br>• Jatuhkan tubuh ke tanah dan lindungi kepala dengan tangan<br>• Waspada terhadap reruntuhan bangunan, kabel listrik putus, dan retakan tanah<br>• Jika di daerah perkotaan dengan gedung tinggi, cari tempat berlindung di dalam gedung yang kokoh<br><br>📍 <strong>DI DALAM KENDARAAN:</strong><br>• Hentikan kendaraan di tempat yang aman dan terbuka<br>• Jauhi jembatan, terowongan, tiang lampu, dan pohon besar<br>• Tetap di dalam kendaraan sampai gempa berhenti<br>• Jangan berhenti di bawah jembatan layang atau flyover<br><br>📍 <strong>SETELAH GEMPA:</strong><br>• Waspada gempa susulan yang bisa terjadi kapan saja - biasanya lebih kecil tapi bisa merusak<br>• Periksa cedera pada diri sendiri dan orang di sekitar - beri pertolongan pertama jika perlu<br>• Jangan masuk ke bangunan yang tampak rusak atau retak<br>• Jangan menggunakan lift - gunakan tangga darurat<br>• Dengarkan informasi resmi dari BMKG dan BNPB melalui radio atau ponsel" },
+    { icon: "fa-water", name: "Banjir", short: "Evakuasi ke tempat tinggi. Jangan menyeberangi genangan banjir - arus bisa menyapu!", long: "<strong>🌊 PANDUAN LENGKAP SAAT BANJIR</strong><br><br>📍 <strong>SEBELUM BANJIR (PERSIAPAN):</strong><br>• Pantau info BMKG tentang curah hujan dan peringatan dini banjir<br>• Siapkan tas darurat di tempat yang tinggi (rak atas, lemari tinggi)<br>• Kenali jalur evakuasi ke tempat yang lebih tinggi (bukit atau lantai 2 rumah tetangga)<br>• Siapkan peralatan: pelampung, ban dalam, atau benda apung lainnya<br>• Simpan dokumen penting di tempat tinggi dan dalam plastik kedap air<br><br>📍 <strong>SAAT BANJIR DATANG:</strong><br>• Segera evakuasi ke tempat yang lebih tinggi - jangan menunda<br>• Jangan berjalan atau berenang di air banjir - kedalaman 15 cm saja bisa menjatuhkan orang dewasa<br>• Jangan mencoba menyeberangi sungai atau selokan yang meluap<br>• Matikan aliran listrik utama rumah sebelum meninggalkan rumah jika air mulai masuk<br>• Hindari jembatan yang terendam air - bisa roboh sewaktu-waktu<br>• Waspada bahaya tersengat listrik dari kabel yang putus dan terendam air<br><br>📍 <strong>SETELAH BANJIR SURUT:</strong><br>• Waspada penyakit pasca banjir (diare, leptospirosis, demam berdarah, infeksi kulit)<br>• Jangan masuk ke rumah yang masih tergenang air tanpa perlengkapan pelindung (sepatu boot, sarung tangan)<br>• Bersihkan rumah dari lumpur dan sampah - gunakan masker dan sarung tangan<br>• Buang semua makanan dan minuman yang terkontaminasi air banjir<br>• Periksa kondisi instalasi listrik sebelum menyalakan kembali<br>• Laporkan kerusakan ke BPBD untuk mendapat bantuan" },
+    { icon: "fa-mountain", name: "Tanah Longsor", short: "Perhatikan tanda-tanda awal. Segera tinggalkan area jika mendengar suara gemuruh.", long: "<strong>⛰️ PANDUAN LENGKAP SAAT TANAH LONGSOR</strong><br><br>📍 <strong>TANDA-TANDA AWAL LONGSOR (HARUS DIWASPADAI):</strong><br>• Retakan tanah di lereng, halaman, atau dinding tembok yang melebar<br>• Pohon, tiang listrik, atau pagar yang tiba-tiba miring<br>• Air keruh atau berwarna kecoklatan keluar dari lereng atau dinding tebing<br>• Suara gemuruh, suara pohon patah, atau suara bebatuan bergesekan dari arah bukit<br>• Pintu atau jendela tiba-tiba sulit dibuka/ditutup (tanda pergerakan tanah)<br><br>📍 <strong>SAAT LONGSOR TERJADI:</strong><br>• Segera tinggalkan area tanpa membawa barang - keselamatan jiwa lebih utama<br>• Berlari ke arah samping (menjauhi jalur longsor) - JANGAN berlari ke bawah bukit<br>• Cari perlindungan di balik bongkahan batu besar, pohon besar yang kokoh, atau bangunan beton<br>• Jika terjebak di dalam rumah, lindungi kepala dengan helm, bantal, atau tangan<br>• Cari ruang aman di sudut ruangan yang tidak terkena reruntuhan langsung<br>• Jangan kembali ke rumah atau area longsor sampai dinyatakan aman oleh petugas<br><br>📍 <strong>SETELAH LONGSOR:</strong><br>• Waspada longsor susulan - bisa terjadi dalam beberapa jam atau hari setelah longsor pertama<br>• Jangan mendekati atau berjalan di atas material longsor - bisa bergerak lagi<br>• Laporkan kejadian ke BPBD atau aparat desa setempat<br>• Bantu korban lain jika aman dan Anda mampu (setelah tim SAR tiba)<br>• Ikuti arahan evakuasi dari petugas jika area dinyatakan tidak aman" },
+    { icon: "fa-fire", name: "Kebakaran Hutan", short: "Kenakan masker N95. Tutup rapat jendela. Evakuasi ke area aman jika kualitas udara memburuk.", long: "<strong>🔥 PANDUAN LENGKAP SAAT KEBAKARAN HUTAN/LAHAN (KARHUTLA)</strong><br><br>📍 <strong>PENCEGAHAN (YANG TIDAK BOLEH DILAKUKAN):</strong><br>• Jangan membakar lahan atau sampah dalam kondisi apapun - ini ilegal dan berbahaya<br>• Jangan membuang puntung rokok sembarangan, terutama di area yang kering<br>• Jangan membuat api unggun saat musim kemarau tanpa pengawasan<br>• Laporkan jika melihat ada titik api ke BPBD atau nomor darurat 113<br><br>📍 <strong>PERSIAPAN MENGHADAPI KABUT ASAP:</strong><br>• Siapkan masker N95 atau masker dengan filter yang baik (minimal 5 per orang)<br>• Tutup rapat semua jendela, pintu, dan ventilasi rumah<br>• Basahi kain dan letakkan di sela-sela pintu/jendela untuk menyaring asap<br>• Siapkan obat-obatan untuk gangguan pernapasan (jika ada anggota keluarga dengan asma/ISPA)<br>• Gunakan air purifier atau AC dengan sirkulasi internal jika tersedia<br><br>📍 <strong>SAAT KEBAKARAN HUTAN TERJADI:</strong><br>• Kenakan masker setiap saat saat berada di luar ruangan<br>• Batasi aktivitas di luar rumah - terutama olahraga berat<br>• Evakuasi ke area yang tidak terdampak asap jika kualitas udara sangat buruk (ISPU >200)<br>• Ikuti arahan evakuasi dari petugas dan BPBD<br>• Bawa tas darurat lengkap jika dievakuasi<br>• Gunakan kacamata pelindung untuk melindungi mata dari iritasi asap<br><br>📍 <strong>SETELAH KEBAKARAN:</strong><br>• Gunakan masker saat membersihkan debu dan abu sisa kebakaran<br>• Periksa kesehatan ke puskesmas jika mengalami sesak napas, batuk terus-menerus, atau iritasi mata<br>• Laporkan kerusakan lingkungan dan rumah ke BPBD<br>• Ikuti program rehabilitasi lahan jika ada dari pemerintah" },
+    { icon: "fa-wind", name: "Cuaca Ekstrem", short: "Hindari pohon besar dan papan reklame. Jangan beraktivitas di luar. Nelayan dilarang melaut.", long: "<strong>🌪️ PANDUAN LENGKAP SAAT CUACA EKSTREM</strong><br><br>📍 <strong>SEBELUM CUACA EKSTREM (PERSIAPAN):</strong><br>• Pantau prakiraan cuaca BMKG setiap hari, terutama saat musim pancaroba<br>• Amankan barang yang bisa terbang: atap seng, pot tanaman, papan reklame, jemuran<br>• Matikan peralatan elektronik dari stopkontak untuk menghindari kerusakan akibat petir<br>• Siapkan senter dan baterai cadangan - listrik sering padam saat cuaca ekstrem<br>• Nelayan dan pemancing dilarang melaut saat ada peringatan gelombang tinggi<br><br>📍 <strong>SAAT CUACA EKSTREM:</strong><br>• Tetap di dalam rumah atau bangunan kokoh - jangan keluar kecuali darurat<br>• Jauhi jendela kaca - bisa pecah tertiup angin kencang<br>• Hindari pohon besar, tiang listrik, papan reklame, dan bangunan tua<br>• Jangan berteduh di bawah jembatan atau bangunan yang tidak kokoh<br>• Jika di kendaraan, berhenti di tempat aman dan jauhi pohon besar<br>• Cabut semua perangkat elektronik dari stopkontak untuk menghindari kerusakan akibat petir<br><br>📍 <strong>SAAT ANGIN PUTING BELIUNG:</strong><br>• Jika di dalam rumah, segera berlindung di ruangan yang tidak memiliki jendela (kamar mandi, lemari)<br>• Jika di luar, berbaring di tanah di tempat yang rendah (parit, selokan) dan lindungi kepala<br>• Jauhi bangunan yang tidak kokoh dan atap seng yang bisa beterbangan<br>• Setelah angin reda, waspada reruntuhan dan kabel listrik putus<br><br>📍 <strong>SETELAH CUACA REDA:</strong><br>• Periksa kerusakan di sekitar rumah dengan hati-hati<br>• Waspada pohon tumbang atau kabel listrik putus yang masih bertegangan<br>• Laporkan kerusakan parah ke BPBD dan PLN (untuk kabel listrik)<br>• Bantu tetangga yang rumahnya rusak jika memungkinkan" }
+];
+
+var kitData = [
+    { icon: "fas fa-box-open", name: "Air Minum", desc: "Minimal 3 liter per orang untuk 3 hari. Ganti setiap 6 bulan.", long: "<strong>💧 AIR MINUM - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Sediakan minimal 3 liter per orang per hari. Untuk keluarga 4 orang, siapkan minimal 36 liter air.<br>• Gunakan botol plastik bersih yang tertutup rapat dan kedap air.<br>• Ganti air setiap 6 bulan sekali agar tetap segar dan aman diminum.<br>• Jika memungkinkan, tambahkan tablet pemurni air atau kaporit sebagai cadangan.<br>• Jangan lupa siapkan air untuk hewan peliharaan jika ada.<br>• Simpan air di tempat yang sejuk dan gelap untuk menjaga kualitas." },
+    { icon: "fa-utensils", name: "Makanan Darurat", desc: "Makanan kaleng, biskuit, mi instan, energy bar. Cek kadaluarsa rutin.", long: "<strong>🍝 MAKANAN DARURAT - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Pilih makanan yang tahan lama dan tidak mudah basi: makanan kaleng (sarden, kornet, kacang), biskuit tinggi kalori, mi instan, energy bar, dan sereal kering.<br>• Siapkan untuk minimal 3 hari - untuk keluarga 4 orang, siapkan porsi 12 kali makan.<br>• Sertakan juga pembuka kaleng manual (bukan elektrik).<br>• Ganti makanan setiap 6 bulan atau sebelum tanggal kadaluarsa.<br>• Pilih makanan yang tidak perlu dimasak jika listrik dan gas padam.<br>• Hindari makanan yang membuat haus (asin, pedas) karena air terbatas." },
+    { icon: "fa-medkit", name: "P3K & Obat-obatan", desc: "Perban, plester, antiseptik, alkohol, gunting, pinset, obat rutin, oralit.", long: "<strong>🏥 KOTAK P3K - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Isi kotak P3K dengan: perban (berbagai ukuran 1-5 cm), plester tahan air, kain kassa steril, antiseptik (betadine), alkohol 70%, gunting kecil, pinset, sarung tangan karet sekali pakai.<br>• Obat-obatan: parasetamol (penurun panas/pereda nyeri), obat diare, oralit (pencegah dehidrasi), antasida (maag), antihistamin (alergi).<br>• Obat rutin pribadi: siapkan untuk 7 hari (hipertensi, diabetes, asma, jantung, dll).<br>• Cek tanggal kadaluarsa setiap 3 bulan, ganti yang sudah habis atau kedaluwarsa.<br>• Simpan di tempat yang kering dan sejuk, tidak terkena sinar matahari langsung." },
+    { icon: "fa-lightbulb", name: "Senter & Baterai", desc: "Senter LED terang, baterai cadangan minimal 2 set, lampu emergency otomatis.", long: "<strong>🔦 SENTER & BATERAI - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Senter LED yang terang (minimal 200 lumen) dengan baterai cadangan minimal 2 set (baterai AA/AAA).<br>• Alternatif: senter isi ulang dengan power bank, lampu tenaga surya, lampu emergency otomatis (nyala saat listrik padam).<br>• Siapkan juga headlamp (lampu kepala) agar tangan bebas untuk aktivitas lain.<br>• Jangan lupa baterai ukuran yang sesuai dengan perangkat Anda.<br>• Simpan baterai di tempat kering dan sejuk, jangan campur baterai lama dan baru." },
+    { icon: "fa-radio", name: "Radio Portabel", desc: "Radio baterai atau dynamo untuk update info resmi saat listrik dan internet padam.", long: "<strong>📻 RADIO PORTABEL - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Radio baterai atau radio tenaga tangan (dynamo) sangat penting saat listrik dan internet padam.<br>• Radio adalah satu-satunya sumber informasi yang bisa diandalkan saat bencana.<br>• Tandai frekuensi radio lokal yang menyiarkan info bencana (RRI, radio komunitas).<br>• Siapkan baterai cadangan yang kompatibel dengan radio Anda.<br>• Jika menggunakan radio dynamo, putar engkolnya setiap beberapa jam untuk mengisi daya." },
+    { icon: "fa-vest", name: "Pakaian & Selimut", desc: "Pakaian ganti 3 set per orang, jaket tebal, sarung tangan, topi, selimut atau sleeping bag.", long: "<strong>👕 PAKAIAN & SELIMUT - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Siapkan pakaian ganti minimal 3 set per orang (baju, celana, dalaman, kaus kaki).<br>• Jaket tebal atau jas hujan untuk melindungi dari dingin dan hujan.<br>• Sarung tangan kerja untuk membersihkan puing-puing atau reruntuhan.<br>• Topi atau helm pelindung untuk melindungi kepala.<br>• Selimut atau sleeping bag untuk tetap hangat saat tidur di pengungsian.<br>• Masukkan semua pakaian dalam plastik kedap air agar tidak basah." },
+    { icon: "fa-mask", name: "Masker & Sanitizer", desc: "Masker N95 (minimal 5 per orang), handsanitizer 100ml, sabun batangan.", long: "<strong>😷 MASKER & HANDSANITIZER - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Masker N95 (minimal 5 per orang) melindungi dari debu, asap, abu vulkanik, dan penyakit menular.<br>• Handsanitizer minimal 100ml untuk menjaga kebersihan tangan saat air terbatas.<br>• Sabun batangan untuk mencuci tangan jika air tersedia.<br>• Tisu basah untuk membersihkan diri jika tidak bisa mandi.<br>• Masker kain cadangan untuk penggunaan sehari-hari di pengungsian." },
+    { icon: "fa-file-alt", name: "Dokumen Penting", desc: "KK, KTP, akta kelahiran, sertifikat tanah, polis asuransi dalam plastik kedap air.", long: "<strong>📄 DOKUMEN PENTING - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Fotokopi dan master dokumen: Kartu Keluarga, KTP seluruh anggota keluarga, akta kelahiran, surat nikah, sertifikat tanah/bangunan, BPKB kendaraan, polis asuransi.<br>• Simpan dalam plastik kedap air (zip lock) atau tas dokumen tahan air.<br>• Simpan juga salinan digital di USB flash drive atau cloud storage (Google Drive, iCloud).<br>• Bawa juga buku tabungan, ATM, dan kartu kredit jika ada.<br>• Jangan lupa paspor jika Anda sering bepergian ke luar negeri." },
+    { icon: "fa-tools", name: "Peralatan", desc: "Pisau lipat/multitool, tali nilon 5-10m, plester lakban, lakban bening, peluit, korek api tahan air.", long: "<strong>🔧 PERALATAN DARURAT - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Pisau lipat atau multitool (Swiss Army knife) untuk berbagai keperluan.<br>• Tali nilon (5-10 meter) untuk mengikat barang, membuat tenda darurat, atau pertolongan.<br>• Plester lakban (duct tape) lebar untuk perbaikan darurat.<br>• Peluit untuk memanggil bantuan - suara peluit lebih keras dari teriakan manusia.<br>• Korek api tahan air atau pemantik api untuk membuat api (jika darurat di alam terbuka).<br>• Buku catatan kecil dan pulpen tahan air untuk mencatat informasi penting." },
+    { icon: "fa-money-bill", name: "Uang Tunai", desc: "Uang pecahan kecil (20rb, 50rb) dan besar (100rb). Minimal Rp500.000 per orang.", long: "<strong>💰 UANG TUNAI - PANDUAN LENGKAP</strong><br><br>📦 <strong>Detail dan Tips:</strong><br>• Siapkan uang tunai dalam pecahan kecil (20rb, 50rb) untuk keperluan sehari-hari dan pecahan besar (100rb).<br>• Minimal Rp500.000 per orang - untuk keluarga 4 orang siapkan Rp2.000.000.<br>• Uang tunai sangat penting karena ATM dan EDC mungkin tidak berfungsi saat bencana.<br>• Simpan di dompet kecil yang tahan air di dalam tas darurat.<br>• Jangan simpan semua uang di satu tempat - pisahkan di beberapa kantong." }
+];
+
+var tipsData = [
+    { icon: "fas fa-route", title: "Jalur Evakuasi", desc: "Kenali minimal 3 jalur evakuasi berbeda dari rumah ke titik kumpul. Latih keluarga 2 kali setahun.", long: "<strong>🚶 JALUR EVAKUASI - PANDUAN LENGKAP</strong><br><br>📌 Kenali minimal 3 jalur evakuasi berbeda dari rumah ke titik kumpul keluarga.<br>📌 Pilih jalur yang tidak melewati area rawan (bantaran sungai, lereng curam, bawah pohon besar).<br>📌 Latih seluruh anggota keluarga minimal 2 kali setahun (Januari dan Juli).<br>📌 Tandai peta jalur evakuasi di dinding rumah agar semua anggota keluarga hafal.<br>📌 Pastikan jalur evakuasi tidak terhalang oleh kendaraan atau barang-barang." },
+    { icon: "fa-battery-full", title: "Power Bank", desc: "Siapkan power bank kapasitas besar (10.000mAh+) yang selalu terisi penuh. Charge ulang setiap 3 hari.", long: "<strong>🔋 POWER BANK - PANDUAN LENGKAP</strong><br><br>📌 Siapkan power bank kapasitas besar (10.000mAh+ hingga 20.000mAh).<br>📌 Isi penuh power bank dan charge ulang setiap 3 hari jika tidak dipakai.<br>📌 Siapkan minimal 2 power bank untuk cadangan.<br>📌 Bawa kabel charger yang sesuai untuk ponsel dan perangkat lain.<br>📌 Pilih power bank dengan fitur fast charging untuk menghemat waktu." },
+    { icon: "fa-people-arrows", title: "Titik Kumpul Keluarga", desc: "Tentukan 2 titik kumpul: di dalam lingkungan dan di luar kota. Pilih tempat yang aman dan mudah dikenali.", long: "<strong>🏠 TITIK KUMPUL KELUARGA - PANDUAN LENGKAP</strong><br><br>📌 Tentukan minimal 2 titik kumpul: (1) di dalam lingkungan/RT (lapangan, masjid), (2) di luar kota (rumah saudara, kantor BPBD).<br>📌 Pilih tempat yang aman dari bencana (jauhi tebing, sungai, pantai).<br>📌 Pastikan semua anggota keluarga hafal lokasi titik kumpul.<br>📌 Untuk anak-anak, ajari dengan cara yang menyenangkan (permainan, gambar).<br>📌 Tentukan 1 orang kontak di luar kota sebagai penghubung jika keluarga terpisah." },
+    { icon: "fa-hand-peace", title: "Jangan Panik", desc: "Panik adalah musuh utama. Ambil napas dalam, pikirkan langkah yang sudah direncanakan.", long: "<strong>😌 JANGAN PANIK - PANDUAN LENGKAP</strong><br><br>📌 Panik adalah musuh utama dalam situasi darurat - panik membuat Anda tidak bisa berpikir jernih.<br>📌 Ambil napas dalam-dalam (tarik napas 4 detik, tahan 4 detik, hembuskan 4 detik).<br>📌 Pikirkan langkah yang sudah direncanakan sebelumnya (jalur evakuasi, tas darurat).<br>📌 Teriak 'TENANG' untuk menenangkan diri sendiri dan orang sekitar.<br>📌 Fokus pada satu tugas kecil terlebih dahulu (misal: ambil tas darurat, ke pintu keluar)." },
+    { icon: "fa-church", title: "Tempat Berteduh", desc: "Kenali bangunan kokoh terdekat: masjid, gereja, sekolah, gedung pemerintah yang anti gempa.", long: "<strong>🏛️ TEMPAT BERTEDUH - PANDUAN LENGKAP</strong><br><br>📌 Kenali bangunan kokoh terdekat: masjid, gereja, sekolah, gedung pemerintahan yang konstruksinya anti gempa.<br>📌 Cari tahu lokasi tempat evakuasi sementara (TES) di lingkungan Anda.<br>📌 Hindari bangunan yang terlihat tua atau memiliki retakan besar.<br>📌 Di alam terbuka, cari dataran tinggi yang jauh dari tebing dan sungai.<br>📌 Jangan berteduh di bawah pohon besar saat hujan deras atau angin kencang." },
+    { icon: "fa-bell", title: "Sirine Peringatan Dini (EWS)", desc: "Sirine panjang 3 menit = peringatan darurat/evakuasi. Sirine putus-putus 10 detik = uji coba sistem.", long: "<strong>🔔 SIRINE PERINGATAN DINI (EWS) - PANDUAN LENGKAP</strong><br><br>📌 Sirine panjang (3 menit terus-menerus) = peringatan darurat/evakuasi. Segera cek info resmi dan bersiap evakuasi!<br>📌 Sirine putus-putus (10 detik) = uji coba sistem. Tidak perlu panik, ini hanya latihan rutin.<br>📌 Pelajari suara sirine di daerah Anda - bisa berbeda di setiap wilayah.<br>📌 Jika mendengar sirine panjang, segera nyalakan radio atau cek info BMKG/BNPB.<br>📌 Jangan abaikan sirine peringatan - keselamatan Anda tergantung pada respons cepat." }
+];
+
+var contactData = [
+    { icon: "fa-building", name: "BNPB Pusat", number: "117", desc: "Badan Nasional Penanggulangan Bencana - Laporan bencana dan permintaan bantuan 24 jam", long: "<strong>📞 BNPB PUSAT - LAYANAN LENGKAP</strong><br><br>Nomor: <strong>117</strong><br><br>📌 Layanan 24 jam untuk:<br>• Melaporkan kejadian bencana di wilayah Anda<br>• Meminta bantuan evakuasi atau logistik<br>• Mendapatkan informasi terkini tentang bencana<br>• Koordinasi dengan tim SAR dan BPBD daerah<br><br>📌 Siapkan informasi: lokasi kejadian, jenis bencana, jumlah korban (jika ada), dan kontak yang bisa dihubungi kembali." },
+    { icon: "fa-landmark", name: "BPBD", number: "112", desc: "Badan Penanggulangan Bencana Daerah - Layanan darurat 24 jam untuk wilayah masing-masing daerah", long: "<strong>📞 BPBD - LAYANAN LENGKAP</strong><br><br>Nomor: <strong>112</strong><br><br>📌 Layanan darurat 24 jam untuk:<br>• Evakuasi warga terdampak bencana<br>• Pendirian posko pengungsian<br>• Distribusi bantuan logistik (makanan, air, obat-obatan)<br>• Koordinasi tanggap darurat di tingkat kabupaten/kota<br><br>📌 Catat nomor BPBD kabupaten/kota Anda di ponsel dan tulis di kertas cadangan." },
+    { icon: "fa-cloud-sun", name: "BMKG", number: "021-6546315", desc: "Info Cuaca & Gempa Bumi - Informasi prakiraan cuaca, peringatan dini tsunami, gempa bumi terkini", long: "<strong>📞 BMKG - LAYANAN LENGKAP</strong><br><br>Nomor: <strong>021-6546315</strong><br><br>📌 Layanan informasi:<br>• Prakiraan cuaca 7 hari ke depan<br>• Peringatan dini cuaca ekstrem (hujan lebat, angin kencang, gelombang tinggi)<br>• Informasi gempa bumi terkini (magnitudo, lokasi, kedalaman)<br>• Peringatan dini tsunami (dalam hitungan menit setelah gempa besar)<br><br>📌 Alternatif akses: website www.bmkg.go.id, aplikasi BMKG Mobile, Twitter @infoBMKG." },
+    { icon: "fa-truck-medical", name: "Ambulans", number: "118", desc: "Gawat Darurat Medis - Pertolongan medis gawat darurat, kecelakaan, kondisi medis mengancam jiwa", long: "<strong>📞 AMBULANS - LAYANAN LENGKAP</strong><br><br>Nomor: <strong>118</strong><br><br>📌 Layanan untuk:<br>• Kecelakaan lalu lintas dengan korban luka berat<br>• Kondisi medis gawat darurat (serangan jantung, stroke, sesak napas berat)<br>• Pasien yang membutuhkan rujukan ke rumah sakit<br>• Ibu hamil akan melahirkan dengan komplikasi<br>• Korban bencana yang mengalami luka parah<br><br>📌 Siapkan informasi: lokasi kejadian, kondisi pasien, nomor kontak pelapor." },
+    { icon: "fa-fire-extinguisher", name: "Damkar", number: "113", desc: "Pemadam Kebakaran - Laporan kebakaran, penyelamatan, evakuasi hewan, penghilangan sarang tawon", long: "<strong>📞 DAMKAR - LAYANAN LENGKAP</strong><br><br>Nomor: <strong>113</strong><br><br>📌 Layanan untuk:<br>• Laporan kebakaran rumah, gedung, atau lahan<br>• Penyelamatan orang atau hewan yang terjebak<br>• Evakuasi korban dari ketinggian (lift macet, atap)<br>• Penghilangan sarang tawon atau hewan berbahaya di pemukiman<br>• Pertolongan non-kebakaran (banjir, pohon tumbang, kucing di pohon)<br><br>📌 Saat melapor: sebutkan alamat jelas, jenis kejadian, dan apakah ada korban." },
+    { icon: "fa-bolt", name: "PLN Darurat", number: "123", desc: "Gangguan Listrik - Laporan gangguan listrik, tiang listrik roboh, kabel putus, potensi bahaya kelistrikan", long: "<strong>📞 PLN DARURAT - LAYANAN LENGKAP</strong><br><br>Nomor: <strong>123</strong><br><br>📌 Layanan untuk:<br>• Laporan pemadaman listrik mendadak di lingkungan Anda<br>• Tiang listrik roboh atau miring membahayakan<br>• Kabel listrik putus dan bertegangan<br>• Gardu listrik meledak atau terbakar<br>• Potensi bahaya kelistrikan lainnya<br><br>📌 Jangan mendekati kabel listrik yang putus - bisa menyebabkan sengatan listrik fatal. Laporkan ke PLN dan jaga jarak aman minimal 10 meter." }
+];
+
+function renderSteps() {
+    var html = '';
+    for(var i = 0; i < stepsData.length; i++) {
+        var s = stepsData[i];
+        html += '<div class="step-card" onclick="showDetail(\'📋 LANGKAH ' + s.num + ': ' + s.title + '\', \'' + s.long.replace(/'/g, "\\'") + '\')">';
+        html += '<div class="step-number">' + s.num + '</div>';
+        html += '<div class="step-content">';
+        html += '<h4><i class="fas fa-check-circle" style="font-size:0.7rem; margin-right:6px;"></i> ' + s.title + '</h4>';
+        html += '<p>' + s.short + '</p>';
+        html += '<span class="step-detail"><i class="fas fa-arrow-right"></i> Klik untuk panduan lengkap & detail</span>';
+        html += '</div></div>';
+    }
+    document.getElementById('stepsGrid').innerHTML = html;
+}
+
+function renderDisasters() {
+    var html = '';
+    for(var i = 0; i < disasterData.length; i++) {
+        var d = disasterData[i];
+        html += '<div class="disaster-card" onclick="showDetail(\'🌊 ' + d.name + ' - PANDUAN LENGKAP\', \'' + d.long.replace(/'/g, "\\'") + '\')">';
+        html += '<div class="disaster-icon"><i class="fas ' + d.icon + '"></i></div>';
+        html += '<div class="disaster-info">';
+        html += '<h4>' + d.name + '</h4>';
+        html += '<p>' + d.short + '</p>';
+        html += '</div></div>';
+    }
+    document.getElementById('disasterGrid').innerHTML = html;
+}
+
+function renderKit() {
+    var html = '';
+    for(var i = 0; i < kitData.length; i++) {
+        var k = kitData[i];
+        html += '<div class="kit-card" onclick="showDetail(\'🎒 ' + k.name + ' - PANDUAN LENGKAP\', \'' + k.long.replace(/'/g, "\\'") + '\')">';
+        html += '<i class="fas ' + k.icon + '"></i>';
+        html += '<h5>' + k.name + '</h5>';
+        html += '<p>' + k.desc + '</p>';
+        html += '</div>';
+    }
+    document.getElementById('kitGrid').innerHTML = html;
+}
+
+function renderTips() {
+    var html = '';
+    for(var i = 0; i < tipsData.length; i++) {
+        var t = tipsData[i];
+        html += '<div class="tips-card" onclick="showDetail(\'💡 ' + t.title + ' - PANDUAN LENGKAP\', \'' + t.long.replace(/'/g, "\\'") + '\')">';
+        html += '<i class="fas ' + t.icon + '"></i>';
+        html += '<h5>' + t.title + '</h5>';
+        html += '<p>' + t.desc + '</p>';
+        html += '</div>';
+    }
+    document.getElementById('tipsGrid').innerHTML = html;
+}
+
+function renderContact() {
+    var html = '';
+    for(var i = 0; i < contactData.length; i++) {
+        var c = contactData[i];
+        html += '<div class="contact-card" onclick="showDetail(\'📞 ' + c.name + ' - LAYANAN LENGKAP\', \'' + c.long.replace(/'/g, "\\'") + '\')">';
+        html += '<div class="contact-icon"><i class="fas ' + c.icon + '"></i></div>';
+        html += '<div class="contact-info">';
+        html += '<h4>' + c.name + '</h4>';
+        html += '<p>' + c.desc + '</p>';
+        html += '<div class="contact-number">' + c.number + '</div>';
+        html += '</div></div>';
+    }
+    document.getElementById('contactGrid').innerHTML = html;
+}
+
+document.getElementById('lastUpdate').innerHTML = new Date().toLocaleString('id-ID');
+renderSteps();
+renderDisasters();
+renderKit();
+renderTips();
+renderContact();
+</script>
+</body>
+</html>

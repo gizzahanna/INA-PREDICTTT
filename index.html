@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>INA-PREDICT | Ultimate Disaster Dashboard - Complete Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Space Grotesk', 'Inter', sans-serif; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            min-height: 100vh;
+            font-size: 15px;
+            line-height: 1.45;
+        }
+        
+        /* DARK MODE - Premium Deep Forest */
+        body.dark { background: #0a0f0d; color: #e2e8e4; }
+        body.dark .bg-gradient { background: radial-gradient(circle at 30% 20%, #14281f, #070b09); }
+        body.dark .sidebar { background: rgba(6, 12, 10, 0.97); border-right-color: rgba(64, 110, 85, 0.4); backdrop-filter: blur(20px); }
+        body.dark .stat-card, body.dark .detail-section, body.dark .news-card,
+        body.dark .province-card, body.dark .contact-card, body.dark .top-bar,
+        body.dark .chatbot-window, body.dark .modal-content, body.dark .breakdown-item,
+        body.dark .city-card, body.dark .leaderboard { 
+            background: rgba(18, 28, 23, 0.9); 
+            border-color: rgba(64, 110, 85, 0.3); 
+        }
+        body.dark .message.bot-message { background: rgba(64, 130, 100, 0.2); color: #d1e6dc; }
+        
+        /* LIGHT MODE - Premium Soft Grey */
+        body.light { background: #f0f4f1; color: #1a2c24; }
+        body.light .bg-gradient { background: radial-gradient(circle at 30% 20%, #e2ece6, #d3e0d8); }
+        body.light .sidebar { background: rgba(255, 255, 255, 0.97); border-right-color: rgba(64, 110, 85, 0.2); }
+        body.light .stat-card, body.light .detail-section, body.light .news-card,
+        body.light .province-card, body.light .contact-card, body.light .top-bar,
+        body.light .chatbot-window, body.light .modal-content, body.light .breakdown-item,
+        body.light .city-card, body.light .leaderboard { 
+            background: rgba(255, 255, 255, 0.94); 
+            border-color: rgba(64, 110, 85, 0.15); 
+        }
+        body.light .message.bot-message { background: #e5f0ea; color: #1e4d3a; }
+        
+        /* Premium Gradients */
+        .stat-value, .breakdown-number, .logo-text, .section-title i, .contact-card i {
+            background: linear-gradient(135deg, #2b6e4e, #3d9b6d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-link:hover, .nav-link.active, .province-name, .contact-number, .news-title, .section-title {
+            color: #2b6e4e !important;
+        }
+        .badge-darurat { background: rgba(200, 80, 60, 0.2); color: #e07a5f; border-color: #c25d45; font-weight: 600; }
+        .status-dot{
+            width:14px;
+            height:14px;
+            border-radius:50%;
+            display:inline-block;
+            margin:auto;
+        }
+
+        .dot-red{
+            background:#ff4d4f;
+            box-shadow:0 0 10px #ff4d4f;
+        }
+
+        .dot-yellow{
+            background:#facc15;
+            box-shadow:0 0 10px #facc15;
+        }
+
+        .dot-green{
+            background:#22c55e;
+            box-shadow:0 0 10px #22c55e;
+        }
+
+        .leaderboard-item{
+            display:grid !important;
+            grid-template-columns:50px 1fr 80px 40px;
+            align-items:center;
+            gap:12px;
+            padding:14px 16px;
+        }
+
+        .leaderboard-item:hover{
+            background:rgba(43,110,78,.08);
+            border-radius:12px;
+        }
+        .badge-siaga { background: rgba(220, 140, 40, 0.2); color: #e0a343; border-color: #cf8e34; font-weight: 600; }
+        .status, .btn-modal, .chat-send { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); color: white; border: none; font-weight: 600; }
+        .status { animation: pulse 2s infinite; padding: 10px 28px; border-radius: 50px; font-size: 0.75rem; cursor: pointer; }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(43, 110, 78, 0.5); } 50% { box-shadow: 0 0 0 10px rgba(43, 110, 78, 0); } }
+        
+        /* Sidebar Premium */
+        .sidebar { width: 280px; padding: 32px 24px; position: fixed; height: 100vh; overflow-y: auto; z-index: 20; border-right: 1px solid; transition: all 0.3s ease; }
+        .logo { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
+        .logo-icon { width: 52px; height: 52px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; box-shadow: 0 8px 20px rgba(43,110,78,0.3); }
+        .logo-text { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
+        .logo-small { font-size: 0.6rem; opacity: 0.65; letter-spacing: 1.5px; margin-top: 4px; }
+        .nav-item { margin: 10px 0; }
+        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 14px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; }
+        body.dark .nav-link { color: #b8d5c8; }
+        body.light .nav-link { color: #4a6a5a; }
+        .nav-link:hover, .nav-link.active { background: rgba(43, 110, 78, 0.12); color: #2b6e4e !important; border-left-color: #2b6e4e; transform: translateX(4px); }
+        .theme-toggle { display: flex; align-items: center; justify-content: space-between; margin-top: 40px; padding: 12px 18px; background: rgba(43, 110, 78, 0.12); border-radius: 50px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
+        .update-time { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(43, 110, 78, 0.2); font-size: 0.6rem; text-align: center; opacity: 0.7; }
+        
+        /* Main Content */
+        .main { margin-left: 280px; padding: 24px 32px; transition: all 0.3s; }
+        .top-bar { backdrop-filter: blur(16px); border-radius: 28px; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; border: 1px solid; }
+        .top-bar h2 { font-size: 1.2rem; font-weight: 700; }
+        .top-bar p { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; margin-bottom: 32px; }
+        .stat-card { backdrop-filter: blur(12px); border-radius: 28px; padding: 20px 16px; cursor: pointer; transition: all 0.25s ease; border: 1px solid; position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(43, 110, 78, 0.08), transparent); transition: 0.6s; }
+        .stat-card:hover::before { left: 100%; }
+        .stat-card:hover { transform: translateY(-6px); border-color: #2b6e4e !important; box-shadow: 0 12px 28px rgba(0,0,0,0.15); }
+        .stat-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.65; font-weight: 600; }
+        .stat-value { font-size: 2rem; font-weight: 700; margin-top: 8px; letter-spacing: -1px; }
+        .stat-sub { font-size: 0.55rem; margin-top: 8px; opacity: 0.6; font-weight: 500; }
+        
+        /* Detail Sections */
+        .detail-section { backdrop-filter: blur(12px); border-radius: 32px; padding: 28px; margin-bottom: 32px; border: 1px solid; }
+        .section-title { font-size: 1rem; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid rgba(43, 110, 78, 0.25); padding-bottom: 14px; font-weight: 700; }
+        .breakdown-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; margin-bottom: 28px; }
+        .breakdown-item { border-radius: 24px; padding: 20px 12px; text-align: center; cursor: pointer; transition: all 0.2s; border: 1px solid; }
+        .breakdown-item:hover { background: rgba(43, 110, 78, 0.12); transform: translateY(-5px); border-color: #2b6e4e; }
+        .breakdown-icon { font-size: 2rem; margin-bottom: 12px; }
+        .breakdown-number { font-size: 1.6rem; font-weight: 700; }
+        .leaderboard { border-radius: 24px; padding: 20px; margin-top: 20px; max-height: 380px; overflow-y: auto; }
+        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 8px; border-bottom: 1px solid rgba(43, 110, 78, 0.12); cursor: pointer; transition: 0.2s; font-weight: 500; }
+        .leaderboard-item:hover { background: rgba(43, 110, 78, 0.08); padding-left: 16px; border-radius: 16px; }
+        
+        /* Breaking News */
+        .breaking { border-radius: 28px; padding: 20px 28px; margin-bottom: 32px; border: 1px solid; cursor: pointer; transition: 0.2s; }
+        .breaking:hover { transform: scale(1.01); }
+        .breaking h3 { font-size: 0.85rem; margin-bottom: 8px; }
+        .breaking p { font-size: 1rem; font-weight: 600; }
+        
+        /* News Grid */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+        .search-input { padding: 12px 20px; border-radius: 60px; font-size: 0.8rem; outline: none; width: 280px; transition: 0.2s; border: 1.5px solid rgba(43, 110, 78, 0.3); font-weight: 500; background: rgba(0,0,0,0.03); }
+        .search-input:focus { border-color: #2b6e4e; box-shadow: 0 0 0 3px rgba(43,110,78,0.1); }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; margin-bottom: 32px; max-height: 620px; overflow-y: auto; padding-right: 10px; }
+        .news-card { backdrop-filter: blur(12px); border-radius: 28px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid; }
+        .news-card:hover { transform: translateY(-8px); border-color: #2b6e4e !important; box-shadow: 0 20px 30px -12px rgba(0,0,0,0.2); }
+        .news-header { padding: 18px 22px; background: linear-gradient(135deg, rgba(43, 110, 78, 0.08), rgba(43, 110, 78, 0.02)); }
+        .news-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+        .news-badge { display: inline-block; padding: 3px 10px; border-radius: 40px; font-size: 0.5rem; margin-left: 10px; font-weight: 700; }
+        
+        /* Province Grid */
+        .province-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; max-height: 480px; overflow-y: auto; margin-top: 20px; }
+        .province-card { border-radius: 20px; padding: 16px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; border: 1px solid; }
+        .province-card:hover { background: rgba(43, 110, 78, 0.1); transform: translateX(6px); border-color: #2b6e4e !important; }
+        .province-name { font-weight: 700; font-size: 0.95rem; }
+        .province-stats { font-size: 0.6rem; margin-top: 6px; opacity: 0.7; }
+        .province-badge { width: 40px; height: 40px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
+        .cities-panel { display: none; margin-top: 24px; padding-top: 20px; border-top: 2px solid rgba(43, 110, 78, 0.2); }
+        .cities-panel.active { display: block; animation: fadeInUp 0.35s ease; }
+        
+        /* FIX: Cities grid - MENYAMPING (grid horizontal) */
+        .cities-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 14px; 
+            margin-top: 20px; 
+            max-height: none;
+            overflow-y: visible;
+        }
+        .city-card { 
+            border-radius: 20px; 
+            padding: 16px 18px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            cursor: pointer; 
+            transition: all 0.25s ease;
+            border: 1px solid rgba(43,110,78,0.2);
+            font-weight: 600;
+            background: rgba(43,110,78,0.03);
+        }
+        .city-card:hover { 
+            background: rgba(43,110,78,0.12); 
+            transform: translateY(-3px) translateX(3px);
+            border-color: #2b6e4e;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+        }
+        .city-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .city-name i {
+            color: #2b6e4e;
+            font-size: 0.9rem;
+        }
+        
+        /* Contact Grid */
+        .contact-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; margin-top: 20px; }
+        .contact-card { padding: 20px 12px; border-radius: 28px; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid; }
+        .contact-card:hover { transform: translateY(-6px); border-color: #2b6e4e !important; background: rgba(43,110,78,0.08); }
+        .contact-card i { font-size: 2rem; margin-bottom: 10px; }
+        .contact-number { font-weight: 700; font-size: 1rem; margin-top: 8px; }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(24px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { border-radius: 40px; max-width: 620px; width: 92%; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(43, 110, 78, 0.4); animation: modalPop 0.3s ease; }
+        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(43, 110, 78, 0.25); }
+        .modal-header h3 { font-size: 1.3rem; font-weight: 700; color: #2b6e4e; }
+        .detail-card { border-radius: 24px; padding: 20px; margin-bottom: 18px; line-height: 1.7; font-size: 0.9rem; background: rgba(0,0,0,0.03); }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed rgba(43,110,78,0.15); }
+        .btn-modal { padding: 14px; border-radius: 50px; width: 100%; font-weight: 700; font-size: 0.9rem; margin-top: 10px; cursor: pointer; transition: 0.2s; }
+        
+        /* Chatbot */
+        .chatbot-btn { position: fixed; bottom: 28px; right: 28px; width: 60px; height: 60px; background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; box-shadow: 0 8px 28px rgba(0,0,0,0.3); transition: 0.2s; animation: bounce 2s infinite; }
+        .chatbot-btn i { font-size: 1.8rem; color: white; }
+        .chatbot-window { position: fixed; bottom: 100px; right: 28px; width: 420px; height: 580px; backdrop-filter: blur(24px); border-radius: 32px; border: 1px solid rgba(43, 110, 78, 0.4); display: none; flex-direction: column; z-index: 101; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .chatbot-window.active { display: flex; }
+        .chat-header { padding: 18px 20px; background: linear-gradient(135deg, rgba(43, 110, 78, 0.15), rgba(43, 110, 78, 0.05)); display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+        .message { max-width: 85%; padding: 12px 16px; border-radius: 20px; font-size: 0.8rem; line-height: 1.45; font-weight: 500; }
+        .bot-message { border-bottom-left-radius: 4px; }
+        .user-message { border-bottom-right-radius: 4px; }
+        .quick-questions { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px; border-top: 1px solid rgba(43, 110, 78, 0.15); }
+        .quick-q { background: rgba(43, 110, 78, 0.12); padding: 8px 14px; border-radius: 40px; font-size: 0.65rem; cursor: pointer; transition: 0.2s; font-weight: 600; }
+        .chat-input-area { display: flex; padding: 14px; gap: 10px; border-top: 1px solid rgba(43, 110, 78, 0.15); }
+        .chat-input { flex: 1; padding: 12px 16px; border-radius: 50px; border: 1px solid rgba(43, 110, 78, 0.35); font-size: 0.8rem; outline: none; background: rgba(0,0,0,0.04); font-weight: 500; }
+        .chat-send { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        
+        .toast { position: fixed; bottom: 28px; left: 28px; backdrop-filter: blur(20px); padding: 12px 24px; border-radius: 60px; z-index: 200; animation: slideInLeft 0.3s ease; border-left: 5px solid #2b6e4e; font-size: 0.8rem; font-weight: 600; background: #1e2a24; color: #d1e6dc; }
+        body.light .toast { background: #ffffff; color: #2b6e4e; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        
+        /* Responsive */
+        @media (max-width: 1300px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } .breakdown-grid { grid-template-columns: repeat(3, 1fr); } .contact-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1000px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .breakdown-grid { grid-template-columns: repeat(2, 1fr); } .news-grid { grid-template-columns: 1fr; } .contact-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { 
+            .sidebar { width: 80px; padding: 24px 12px; } 
+            .logo-text, .logo-small, .nav-link span, .theme-toggle span { display: none; } 
+            .logo-icon { margin: 0 auto; transform: scale(0.9); } 
+            .nav-link { justify-content: center; padding: 12px; } 
+            .nav-link i { font-size: 1.3rem; } 
+            .theme-toggle { justify-content: center; padding: 12px; } 
+            .main { margin-left: 80px; padding: 16px 20px; } 
+            .stats-grid { grid-template-columns: 1fr; } 
+            .top-bar { flex-direction: column; text-align: center; } 
+            .chatbot-window { width: 92vw; right: 4vw; left: 4vw; bottom: 100px; height: 65vh; } 
+            .section-header { flex-direction: column; align-items: stretch; } 
+            .search-input { width: 100%; } 
+            .province-grid { grid-template-columns: 1fr; } 
+            .cities-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } 
+            .breaking p { font-size: 0.8rem; }
+        }
+        @media (max-width: 480px) { .contact-grid { grid-template-columns: 1fr; } .breakdown-grid { grid-template-columns: 1fr; } .main { padding: 12px 16px; } .detail-section { padding: 18px; } }
+        
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(43, 110, 78, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #2b6e4e, #3d9b6d); border-radius: 10px; }
+        
+        .sub-detail-card { border-radius: 18px; padding: 14px; margin-top: 12px; border: 1px solid rgba(43,110,78,0.2); background: rgba(0,0,0,0.02); }
+
+        .leaderboard-item{
+            display:grid;
+            grid-template-columns:50px 1fr 80px 40px;
+            align-items:center;
+            gap:15px;
+            padding:14px 16px;
+            border-bottom:1px solid rgba(255,255,255,0.05);
+        }
+
+        .leaderboard-item:hover{
+            background:rgba(255,255,255,0.03);
+        }
+
+        .rank-number{
+            font-weight:800;
+            color:#2b6e4e;
+            font-size:1.1rem;
+        }
+
+        .province-name{
+            font-weight:600;
+        }
+
+        .event-count{
+            text-align:right;
+            color:#3d9b6d;
+            font-weight:800;
+            font-size:1.1rem;
+        }
+
+        .status-dot{
+            width:14px;
+            height:14px;
+            border-radius:50%;
+            display:inline-block;
+            justify-self:center;
+        }
+
+        .status-danger{
+            background:#ff4d4f;
+            box-shadow:0 0 10px #ff4d4f;
+        }
+
+        .status-warning{
+            background:#facc15;
+            box-shadow:0 0 10px #facc15;
+        }
+
+        .status-safe{
+            background:#22c55e;
+            box-shadow:0 0 10px #22c55e;
+        }
+
+        .legend-status{
+            display:flex;
+            gap:20px;
+            margin-bottom:15px;
+            font-size:.75rem;
+            font-weight:600;
+        }
+
+        .legend-item{
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+    </style>
+</head>
+<body class="dark">
+<div class="bg-gradient"></div>
+
+<aside class="sidebar">
+    <div class="logo"><div class="logo-icon"><i class="fas fa-shield-haltered"></i></div><div><div class="logo-text">INA-PREDICT</div><div class="logo-small">EARLY WARNING SYSTEM</div></div></div>
+    <div class="nav-menu">
+        <div class="nav-item">
+            <a class="nav-link active" href="index.html">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            <a class="nav-link" href="prediksi.html">
+                <i class="fas fa-chart-line"></i>
+                <span>Prediksi Bencana</span>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a class="nav-link" href="panduan.html">
+                <i class="fas fa-hand-holding-heart"></i>
+                <span>Panduan Aksi</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            <a class="nav-link" href="kontak.html">
+                <i class="fas fa-phone-alt"></i>
+                <span>Kontak Darurat</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            <a class="nav-link" href="donasi.html">
+                <i class="fas fa-hand-holding-usd"></i>
+                <span>Donasi</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            <a class="nav-link" href="chatbot.html">
+                <i class="fas fa-robot"></i>
+                <span>Donasi</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            <a class="nav-link" href="hubungikami.html">
+                <i class="fas fa-envelope"></i>
+                <span>Hubungi Kami</span>
+            </a>
+        </div>
+    </div>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-sun"></i>
+        <span>Dark / Light Mode</span>
+        <i class="fas fa-moon"></i>
+    </div>
+    <div class="update-time"><i class="fas fa-clock"></i> Update: <span id="lastUpdate"></span><br>Data BNPB - BMKG - BPBD</div>
+</aside>
+
+<main class="main">
+    <div class="top-bar"><div><h2><i class="fas fa-chart-line"></i> PUSAT INFORMASI BENCANA INDONESIA</h2><p>34 Provinsi | 514 Kab/Kota | Data Real-time | Early Warning</p></div><div class="status" onclick='showToast("🚨 STATUS SIAGA NASIONAL - Selalu waspada!")'><i class="fas fa-exclamation-triangle"></i> 🚨 STATUS: SIAGA NASIONAL</div></div>
+
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="detail-section"><div class="section-title"><i class="fas fa-chart-pie"></i> 📊 DETAIL KEJADIAN BENCANA 2026 (3.247 Total)</div><div class="breakdown-grid" id="breakdownGrid"></div><div class="leaderboard" id="leaderboard"></div></div>
+
+    <div class="breaking" id="breakingNews" onclick='showDetail("🔴 BREAKING NEWS", "<div class=\"detail-row\"><span>📍 LOKASI</span><strong>Garut, Jawa Barat</strong></div><div class=\"detail-row\"><span>💧 BANJIR BANDANG</span><strong>1.800 jiwa mengungsi</strong></div><div class=\"detail-row\"><span>🏠 RUSAK</span><strong>500 rumah terendam</strong></div><div class=\"sub-detail-card\">⚠️ TINDAKAN: Evakuasi segera ke tempat tinggi! Matikan listrik!</div>")'><h3><i class="fas fa-broadcast-tower"></i> 🔴 BREAKING NEWS / PERINGATAN DINI</h3><p>🔴 BANJIR BANDANG GARUT - 1.800 Jiwa Mengungsi, 500 rumah terendam</p></div>
+
+    <div class="section-header"><h2 style="color:#2b6e4e;"><i class="fas fa-newspaper"></i> 📰 BERITA BENCANA TERKINI</h2><span style="background:rgba(200,80,60,0.2); padding:6px 16px; border-radius:40px; font-size:0.65rem; font-weight:700; color:#e07a5f;">LIVE</span></div>
+    <div class="news-grid" id="newsGrid"></div>
+
+    <div class="detail-section"><div class="section-header"><h2><i class="fas fa-map-marked-alt"></i> 🗺️ 34 PROVINSI + 514 KABUPATEN/KOTA</h2><input type="text" id="searchProvince" class="search-input" placeholder="🔍 Cari provinsi..." onkeyup="filterProvinces()"></div>
+    <div class="province-grid" id="provinceGrid"></div><div class="cities-panel" id="citiesPanel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;"><h3 id="selectedProvinceName" style="font-size:1rem;"></h3><div onclick="closeCitiesPanel()" style="cursor:pointer; background:rgba(43,110,78,0.12); padding:8px 20px; border-radius:40px; font-size:0.7rem; font-weight:600;">✕ TUTUP</div></div><div class="cities-grid" id="citiesGrid"></div></div></div>
+
+    <div class="detail-section"><h2 style="color:#2b6e4e; margin-bottom:20px;"><i class="fas fa-phone-alt"></i> 📞 KONTAK DARURAT 24/7</h2><div class="contact-grid" id="contactGrid"></div></div>
+    <div style="text-align:center; font-size:0.55rem; opacity:0.5; margin-top:20px; padding:16px;"><i class="fas fa-shield-alt"></i> Sumber: BNPB, BMKG, BPBD | Data real-time | Akurasi 98.7% | Terintegrasi dengan InaRisk</div>
+</main>
+
+<div class="chatbot-btn" id="chatbotBtn"><i class="fas fa-robot"></i></div>
+<div class="chatbot-window" id="chatbotWindow"><div class="chat-header"><h4><i class="fas fa-robot"></i> INA-BOT | Asisten Bencana</h4><span class="chat-close" id="chatClose" style="cursor:pointer; font-size:1.3rem;">&times;</span></div><div class="chat-messages" id="chatMessages"><div class="message bot-message">👋 Halo! Saya asisten virtual bencana Indonesia. Tanyakan apa saja tentang bencana, evakuasi, atau informasi terkini.<br><br>📌 Contoh: "banjir", "gempa", "tas siaga", "nomor darurat", "cara evakuasi tsunami", "apa itu mitigasi"</div></div><div class="quick-questions" id="quickQuestions"></div><div class="chat-input-area"><input type="text" class="chat-input" id="chatInput" placeholder="Ketik pertanyaan..." onkeypress="if(event.key==='Enter') sendMessage()"><button class="chat-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button></div></div>
+
+<div id="detailModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="modalTitle">Detail Informasi</h3><span class="close-modal" onclick="closeModal()" style="cursor:pointer; font-size:1.5rem;">&times;</span></div><div class="modal-body" id="modalBody"></div></div></div>
+
+<script>
+function toggleTheme(){ document.body.classList.toggle('dark'); document.body.classList.toggle('light'); localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light'); }
+if(localStorage.getItem('theme') === 'light') document.body.classList.replace('dark','light');
+
+// ==================== DATA LENGKAP 34 PROVINSI SEMUA KABUPATEN/KOTA ====================
+const allProvinces = [
+    { name:"Aceh", status:"waspada", totalEvents:187, evacPoints:412, refugees:12450, deaths:23, injured:156, predRisk:79, cities:["Banda Aceh","Sabang","Lhokseumawe","Langsa","Subulussalam","Jantho","Kutacane","Meulaboh","Takengon","Sigli","Tapaktuan","Blangpidie","Bireuen","Samalanga","Sinabang","Calang"] },
+    { name:"Sumatera Utara", status:"waspada", totalEvents:245, evacPoints:589, refugees:18720, deaths:31, injured:198, predRisk:73, cities:["Medan","Binjai","Pematangsiantar","Tebing Tinggi","Tanjungbalai","Sibolga","Padang Sidempuan","Gunungsitoli","Kisaran","Rantauprapat","Parapat","Berastagi","Kabanjahe","Stabat","Lubuk Pakam"] },
+    { name:"Sumatera Barat", status:"darurat", totalEvents:312, evacPoints:721, refugees:25430, deaths:41, injured:298, predRisk:87, cities:["Padang","Bukittinggi","Payakumbuh","Solok","Padang Panjang","Pariaman","Sawahlunto","Lubuk Basung","Batusangkar","Painan","Balai Selasa","Koto Baru","Sijunjung"] },
+    { name:"Riau", status:"waspada", totalEvents:198, evacPoints:543, refugees:15670, deaths:19, injured:134, predRisk:78, cities:["Pekanbaru","Dumai","Bengkalis","Siak","Rengat","Bangkinang","Tembilahan","Selat Panjang","Ujung Tanjung","Bagan Batu","Pasir Pengaraian"] },
+    { name:"Jambi", status:"waspada", totalEvents:145, evacPoints:389, refugees:9870, deaths:12, injured:89, predRisk:68, cities:["Jambi","Sungai Penuh","Muara Bungo","Bangko","Kuala Tungkal","Sengeti","Muara Tebo","Sarolangun","Sungai Manas"] },
+    { name:"Sumatera Selatan", status:"waspada", totalEvents:178, evacPoints:456, refugees:12340, deaths:21, injured:112, predRisk:71, cities:["Palembang","Prabumulih","Lubuklinggau","Pagar Alam","Baturaja","Kayuagung","Sekayu","Muara Enim","Lahat","Martapura"] },
+    { name:"Bengkulu", status:"waspada", totalEvents:98, evacPoints:278, refugees:6540, deaths:11, injured:67, predRisk:62, cities:["Bengkulu","Manna","Arga Makmur","Curup","Kepahiang","Muara Aman","Tais","Bintuhan","Kota Padang"] },
+    { name:"Lampung", status:"waspada", totalEvents:189, evacPoints:456, refugees:13450, deaths:22, injured:145, predRisk:76, cities:["Bandar Lampung","Metro","Kotabumi","Liwa","Kalianda","Pringsewu","Gunungsugih","Blambangan Umpu","Menggala","Sukadana"] },
+    { name:"Kep. Bangka Belitung", status:"waspada", totalEvents:45, evacPoints:156, refugees:3210, deaths:5, injured:34, predRisk:52, cities:["Pangkalpinang","Sungailiat","Mentok","Tanjung Pandan","Manggar","Toboali","Koba"] },
+    { name:"Kepulauan Riau", status:"waspada", totalEvents:38, evacPoints:134, refugees:2870, deaths:3, injured:28, predRisk:50, cities:["Tanjungpinang","Batam","Karimun","Bintan","Natuna","Anambas","Lingga"] },
+    { name:"DKI Jakarta", status:"waspada", totalEvents:276, evacPoints:634, refugees:28760, deaths:28, injured:234, predRisk:75, cities:["Jakarta Pusat","Jakarta Barat","Jakarta Selatan","Jakarta Timur","Jakarta Utara","Kepulauan Seribu","Gambir","Menteng","Cengkareng","Cilincing"] },
+    { name:"Jawa Barat", status:"darurat", totalEvents:589, evacPoints:1250, refugees:65430, deaths:87, injured:543, predRisk:92, cities:["Bandung","Bekasi","Bogor","Depok","Cimahi","Sukabumi","Cianjur","Garut","Tasikmalaya","Cirebon","Purwakarta","Karawang","Subang","Sumedang","Indramayu","Majalengka","Kuningan","Banjar","Ciamis","Pangandaran"] },
+    { name:"Jawa Tengah", status:"darurat", totalEvents:456, evacPoints:987, refugees:49870, deaths:63, injured:398, predRisk:85, cities:["Semarang","Surakarta","Magelang","Purwokerto","Pekalongan","Tegal","Salatiga","Kudus","Cilacap","Purbalingga","Banjarnegara","Wonosobo","Kebumen","Purworejo","Klaten","Sukoharjo","Boyolali","Temanggung","Wonogiri","Rembang","Blora","Grobogan","Demak","Jepara","Pati","Kendal"] },
+    { name:"DI Yogyakarta", status:"waspada", totalEvents:156, evacPoints:398, refugees:12340, deaths:18, injured:112, predRisk:72, cities:["Yogyakarta","Sleman","Bantul","Kulon Progo","Gunungkidul","Wates","Godean","Depok","Kalasan","Ngemplak"] },
+    { name:"Jawa Timur", status:"darurat", totalEvents:534, evacPoints:1120, refugees:58760, deaths:72, injured:487, predRisk:88, cities:["Surabaya","Malang","Kediri","Blitar","Madiun","Probolinggo","Lumajang","Sidoarjo","Jember","Banyuwangi","Mojokerto","Pasuruan","Pacitan","Ponorogo","Tuban","Bojonegoro","Ngawi","Magetan","Nganjuk","Jombang","Lamongan","Gresik","Bangkalan","Sampang","Pamekasan","Sumenep"] },
+    { name:"Banten", status:"darurat", totalEvents:289, evacPoints:678, refugees:32450, deaths:34, injured:267, predRisk:90, cities:["Serang","Cilegon","Tangerang","Tangerang Selatan","Pandeglang","Lebak","Rangkasbitung","Balaraja","Malingping","Cikupa","Curug","Teluknaga","Sepatan","Mauk","Kresek"] },
+    { name:"Bali", status:"waspada", totalEvents:134, evacPoints:298, refugees:8970, deaths:12, injured:98, predRisk:65, cities:["Denpasar","Badung","Gianyar","Karangasem","Buleleng","Tabanan","Bangli","Klungkung","Jembrana","Singaraja","Kuta","Seminyak","Ubud"] },
+    { name:"Nusa Tenggara Barat", status:"waspada", totalEvents:156, evacPoints:367, refugees:11230, deaths:18, injured:112, predRisk:70, cities:["Mataram","Bima","Sumbawa Besar","Praya","Selong","Dompu","Taliwang","Raba","Gerung","Lombok Barat","Lombok Tengah","Lombok Timur"] },
+    { name:"Nusa Tenggara Timur", status:"waspada", totalEvents:178, evacPoints:412, refugees:14320, deaths:21, injured:134, predRisk:72, cities:["Kupang","Ende","Maumere","Labuan Bajo","Ruteng","Waingapu","Soe","Atambua","Kefamenanu","Kalabahi","Bajawa","Borong","Lewoleba"] },
+    { name:"Kalimantan Barat", status:"waspada", totalEvents:112, evacPoints:423, refugees:14320, deaths:14, injured:98, predRisk:63, cities:["Pontianak","Singkawang","Sambas","Mempawah","Bengkayang","Landak","Sanggau","Sekadau","Sintang","Melawi","Kapuas Hulu","Ketapang","Kayong Utara","Kubu Raya"] },
+    { name:"Kalimantan Tengah", status:"waspada", totalEvents:108, evacPoints:398, refugees:13450, deaths:13, injured:87, predRisk:64, cities:["Palangka Raya","Kasongan","Kuala Kapuas","Buntok","Tamiang Layang","Muara Teweh","Puruk Cahu","Sampit","Pangkalan Bun","Sukamara","Lamandau"] },
+    { name:"Kalimantan Selatan", status:"darurat", totalEvents:289, evacPoints:567, refugees:27650, deaths:38, injured:276, predRisk:86, cities:["Banjarmasin","Banjarbaru","Kotabaru","Martapura","Pelaihari","Barabai","Kandangan","Rantau","Amuntai","Tanjung","Marabahan","Paringin","Batu Licin"] },
+    { name:"Kalimantan Timur", status:"waspada", totalEvents:98, evacPoints:367, refugees:11230, deaths:11, injured:76, predRisk:61, cities:["Samarinda","Balikpapan","Bontang","Tenggarong","Sangatta","Berau","Penajam","Paser","Kutai Barat","Mahakam Ulu"] },
+    { name:"Kalimantan Utara", status:"waspada", totalEvents:56, evacPoints:189, refugees:4320, deaths:6, injured:41, predRisk:55, cities:["Tanjung Selor","Tarakan","Malinau","Nunukan","Bulungan","Krayan","Sebatik","Sesayap"] },
+    { name:"Sulawesi Utara", status:"waspada", totalEvents:145, evacPoints:389, refugees:12450, deaths:17, injured:98, predRisk:68, cities:["Manado","Bitung","Tomohon","Kotamobagu","Minahasa","Kawangkoan","Airmadidi","Tondano","Amurang","Tahuna","Melonguane","Sangihe","Talaud"] },
+    { name:"Sulawesi Tengah", status:"darurat", totalEvents:278, evacPoints:621, refugees:29870, deaths:56, injured:412, predRisk:89, cities:["Palu","Poso","Donggala","Sigi","Banggai","Morowali","Tojo Una-Una","Buol","Tolitoli","Ampana","Luwuk","Bunta","Batui","Bungku","Kolonedale"] },
+    { name:"Sulawesi Selatan", status:"waspada", totalEvents:198, evacPoints:456, refugees:15670, deaths:24, injured:167, predRisk:71, cities:["Makassar","Parepare","Palopo","Bulukumba","Bantaeng","Jeneponto","Takalar","Gowa","Maros","Pangkajene","Barru","Bone","Soppeng","Wajo","Sidenreng","Pinrang","Enrekang","Tana Toraja"] },
+    { name:"Sulawesi Tenggara", status:"waspada", totalEvents:123, evacPoints:345, refugees:9870, deaths:15, injured:89, predRisk:65, cities:["Kendari","Baubau","Kolaka","Raha","Unaaha","Andoolo","Lasusua","Rumbia","Wangi-Wangi","Pasarwajo"] },
+    { name:"Sulawesi Barat", status:"waspada", totalEvents:98, evacPoints:298, refugees:7650, deaths:12, injured:67, predRisk:62, cities:["Mamuju","Polewali","Majene","Mamasa","Pasangkayu","Baras","Tikke Raya","Bambalamotu","Topoyo","Budong-Budong"] },
+    { name:"Gorontalo", status:"waspada", totalEvents:76, evacPoints:234, refugees:5430, deaths:8, injured:54, predRisk:58, cities:["Gorontalo","Limboto","Marisa","Suwawa","Tilamuta","Kwandang","Bone Bolango","Pohuwato","Paguyaman","Telaga"] },
+    { name:"Maluku", status:"waspada", totalEvents:89, evacPoints:278, refugees:6540, deaths:11, injured:76, predRisk:60, cities:["Ambon","Tual","Masohi","Saumlaki","Namlea","Bula","Langgur","Dobo","Piru","Liang"] },
+    { name:"Maluku Utara", status:"waspada", totalEvents:78, evacPoints:256, refugees:5980, deaths:9, injured:63, predRisk:59, cities:["Sofifi","Ternate","Tidore","Tobelo","Bacan","Labuha","Sanana","Galela","Jailolo","Maba"] },
+    { name:"Papua", status:"darurat", totalEvents:245, evacPoints:489, refugees:21450, deaths:52, injured:187, predRisk:84, cities:["Jayapura","Merauke","Biak","Nabire","Wamena","Timika","Serui","Enarotali","Sentani","Abepura","Waena","Depapre","Skouw","Holtekamp"] },
+    { name:"Papua Barat", status:"waspada", totalEvents:87, evacPoints:267, refugees:6540, deaths:11, injured:76, predRisk:60, cities:["Manokwari","Sorong","Fakfak","Bintuni","Teminabuan","Ransiki","Waisai","Kaimana","Ayamaru"] }
+];
+
+const mainStats = [
+    { title:"TOTAL KEJADIAN", value:"3,247", sub:"+12% dari 2025 | 34 provinsi", detail:"📊 TOTAL BENCANA 2026: 3.247 kejadian\n\n📋 BANJIR: 1.204 (37.1%)\n🌍 GEMPA: 712 (21.9%)\n⛰️ LONGSOR: 589 (18.1%)\n🔥 KARHUTLA: 312 (9.6%)\n⛈️ CUACA EKSTREM: 430 (13.3%)\n\n📍 Provinsi tertinggi: Jawa Barat (589), Jawa Timur (534), Jawa Tengah (456)" },
+    { title:"PERINGATAN AKTIF", value:"34", sub:"🔴 14 Darurat | 🟡 20 Waspada", detail:"⚠️ 34 PERINGATAN AKTIF\n\n🔴 STATUS DARURAT (14 provinsi):\nJawa Barat, Jawa Timur, Jawa Tengah, Banten, Sulawesi Tengah, Sumatera Barat, Kalimantan Selatan, Papua, Aceh, Sumatera Utara, Riau, Lampung, DKI Jakarta, Bali\n\n🟡 STATUS WASPADA (20 provinsi):\nNTB, NTT, Sulsel, Kaltim, Kalteng, dan lainnya" },
+    { title:"TITIK EVAKUASI", value:"7,245", sub:"Kapasitas 850k jiwa", detail:"🏢 7.245 TITIK EVAKUASI\n\nKapasitas total: 850.000 jiwa\n\n📍 Top 3 titik evakuasi:\n1. Jawa Barat (1.250 titik)\n2. Jawa Timur (1.120 titik)\n3. Jawa Tengah (987 titik)\n\nTersebar di 514 kabupaten/kota seluruh Indonesia" },
+    { title:"PROVINSI TERDAMPAK", value:"33/34", sub:"97% wilayah", detail:"🗺️ 33 dari 34 provinsi terdampak bencana\n\n📊 TINGKAT KERUSAKAN:\n- Berat: 8 provinsi\n- Sedang: 15 provinsi\n- Ringan: 10 provinsi\n\n✅ Provinsi dengan kejadian terendah: Kepulauan Riau (38 kejadian)" },
+    { title:"PENGUNGSI", value:"412.7k", sub:"+52k dalam 7 hari", detail:"👥 412.750 JIWA MENGUNGSI\n\nTersebar di 1.247 titik pengungsian\n\n📍 Rincian per provinsi:\n- Jawa Barat: 65.430 jiwa\n- Jawa Timur: 58.760 jiwa\n- Jawa Tengah: 49.870 jiwa\n- Banten: 32.450 jiwa\n- Sulawesi Tengah: 29.870 jiwa\n\nKorban meninggal: 687 jiwa\nKorban luka: 5.234 jiwa" },
+    { title:"PERSONEL SIAGA", value:"78.2k", sub:"TNI/Polri + Relawan", detail:"🛡️ 78.200 PERSONEL SIAGA\n\n🔹 TNI: 32.500 personel\n🔹 POLRI: 28.700 personel\n🔹 Relawan Terlatih: 17.000 orang\n\n🚁 45 helikopter siaga\n🚛 1.200 kendaraan taktis\n🚑 800 ambulans tersebar\n📡 1.500 radio komunikasi" }
+];
+
+const disasterBreak = [
+    { name:"BANJIR", icon:"fa-water", count:1204, percent:37.1, color:"#2b6e4e", desc:"💧 BANJIR: 1.204 kejadian\n\n📍 Tertinggi: Jawa Barat (312), Jawa Timur (278), Kalimantan Selatan (189)\n⚠️ Kerugian: Rp2.4 Triliun\n🏠 Rumah terendam: 34.500 unit\n👥 Pengungsi: 189.430 jiwa" },
+    { name:"GEMPA", icon:"fa-mountain", count:712, percent:21.9, color:"#c25d45", desc:"🌍 GEMPA: 712 kejadian\n\n📍 Tertinggi: Jawa Barat (189), Sumatera Barat (145), Papua (98)\n📊 Magnitudo tertinggi: M 6,2\n⚠️ Kerusakan: 12.400 bangunan rusak\n💀 Korban meninggal: 187 jiwa" },
+    { name:"LONGSOR", icon:"fa-mountain", count:589, percent:18.1, color:"#e0a343", desc:"⛰️ LONGSOR: 589 kejadian\n\n📍 Tertinggi: Jawa Tengah (178), Jawa Barat (156), Jawa Timur (98)\n⚠️ 235 jiwa meninggal dunia\n🏠 8.900 rumah tertimbun\n🚧 245 ruas jalan tertutup" },
+    { name:"KARHUTLA", icon:"fa-fire-extinguisher", count:312, percent:9.6, color:"#e07a5f", desc:"🔥 KARHUTLA: 312 kejadian\n\n📍 Tertinggi: Riau (98), Kalimantan Selatan (67), Jambi (45)\n🌫️ Kabut asap: 8 provinsi terdampak\n👥 ISPA: 45.000 kasus\n🌳 Luas lahan terbakar: 45.000 hektar" },
+    { name:"CUACA", icon:"fa-cloud-rain", count:430, percent:13.3, color:"#5f9b8a", desc:"⛈️ CUACA EKSTREM: 430 kejadian\n\n📍 Tertinggi: Aceh (78), Sumatera Utara (67), NTB (56)\n💨 Puting beliung: 89 kejadian\n⚠️ 12.400 rumah rusak\n🌊 Puting beliung di Jawa Timur: 34 kejadian" }
+];
+
+const beritaList = [
+    { id:1, title:"🔴 BANJIR BANDANG GARUT - 1.800 Jiwa Mengungsi", location:"Garut, Jawa Barat", date:"07 Juni 2026 | 14:30 WIB", severity:"darurat", icon:"fa-water", short:"Banjir setinggi 2.5 meter, 500 rumah terendam", full:"BANJIR BANDANG melanda 12 desa di Kecamatan Banyuresmi. Ketinggian air 2.5-3 meter. 500 rumah terendam. Akses Garut-Tasikmalaya lumpuh total.", action:"🔴 EVAKUASI SEGERA ke tempat tinggi! Matikan listrik! Bawa dokumen penting!" },
+    { id:2, title:"🔴 GEMPA M 5,7 SUKABUMI", location:"Sukabumi, Jawa Barat", date:"07 Juni 2026 | 08:45 WIB", severity:"darurat", icon:"fa-mountain", short:"200 rumah rusak, getaran hingga Jakarta", full:"Gempa dangkal magnitudo 5,7. Pusat di darat 25 km Tenggara Sukabumi. 200 rumah rusak ringan, 45 rusak berat.", action:"DROP, COVER, HOLD ON! Lindungi kepala! Waspada gempa susulan!" },
+    { id:3, title:"🔴 TSUNAMI MEGATHRUST - Evakuasi Massal", location:"Banten & Lampung", date:"06 Juni 2026 | 22:15 WIB", severity:"darurat", icon:"fa-wave", short:"50.000+ jiwa dievakuasi", full:"BMKG peringatan dini tsunami pasca aktivitas Gunung Anak Krakatau. Evakuasi massal Anyer, Carita, Lampung Selatan.", action:"🔴 LARI KE TEMPAT TINGGI minimal 30 meter! Jauhi pantai!" },
+    { id:4, title:"🔴 GUNUNG SEMERU ERUPSI", location:"Lumajang, Jawa Timur", date:"06 Juni 2026 | 07:30 WIB", severity:"darurat", icon:"fa-volcano", short:"Awan panas 5km, 2.000 mengungsi", full:"Awan panas guguran sejauh 5 km ke Besuk Kobokan. Radius bahaya 8 km. Hujan abu tipis di Lumajang.", action:"Gunakan masker N95! Jauhi radius 8km! Waspada lahar dingin!" },
+    { id:5, title:"🟡 KARHUTLA RIAU - 8.000 ISPA", location:"Riau", date:"05 Juni 2026", severity:"waspada", icon:"fa-fire-extinguisher", short:"Kualitas Udara Tidak Sehat", full:"Kebakaran hutan di Bengkalis, Dumai, Rokan Hilir. 60 hotspot. PM2.5: 120-150.", action:"Gunakan masker N95! Tutup ventilasi! Kurangi aktivitas luar!" },
+    { id:6, title:"🟡 LONGSOR TUTUP JALUR PUNCAK", location:"Puncak, Bogor", date:"05 Juni 2026", severity:"waspada", icon:"fa-mountain", short:"800 kendaraan terjebak", full:"Material longsor setinggi 4 meter menutup total jalur Puncak KM 41+200.", action:"Cari jalur alternatif Ciawi-Sukabumi! Waspada longsor susulan!" }
+];
+
+function renderStats(){ document.getElementById('statsGrid').innerHTML = mainStats.map(s => `<div class="stat-card" onclick="showDetail('${s.title}', '${s.detail.replace(/\n/g,'<br>')}')"><div class="stat-title">${s.title}</div><div class="stat-value">${s.value}</div><div class="stat-sub">${s.sub}</div></div>`).join(''); }
+function renderBreakdown(){ document.getElementById('breakdownGrid').innerHTML = disasterBreak.map(d => `<div class="breakdown-item" onclick="showDetail('${d.name}', '${d.desc.replace(/\n/g,'<br>')}')"><div class="breakdown-icon"><i class="fas ${d.icon}" style="color:${d.color}"></i></div><div class="breakdown-number">${d.count.toLocaleString()}</div><div style="font-size:0.65rem; font-weight:600;">${d.percent}%</div></div>`).join(''); }
+function renderLeaderboard(){ const topP = [...allProvinces].sort((a,b)=>b.totalEvents-a.totalEvents).slice(0,12); document.getElementById('leaderboard').innerHTML = `<div style="font-weight:800; margin-bottom:16px;"><i class="fas fa-trophy"></i> 🏆 TOP 12 PROVINSI KEJADIAN TERTINGGI 2026</div>${topP.map((p,idx)=>`<div class="leaderboard-item" onclick="showDetail('PROVINSI ${p.name}', '<div class=\\'detail-row\\'><span>📊 TOTAL KEJADIAN</span><strong>${p.totalEvents} kejadian</strong></div><div class=\\'detail-row\\'><span>👥 PENGUNGSI</span><strong>${p.refugees.toLocaleString()} jiwa</strong></div><div class=\\'detail-row\\'><span>🏢 TITIK EVAKUASI</span><strong>${p.evacPoints} titik</strong></div><div class=\\'detail-row\\'><span>💀 KORBAN MENINGGAL</span><strong>${p.deaths} jiwa</strong></div><div class=\\'detail-row\\'><span>🏥 KORBAN LUKA</span><strong>${p.injured} jiwa</strong></div><div class=\\'detail-row\\'><span>⚠️ STATUS</span><strong style=\\'color:#e07a5f\\'>${p.status.toUpperCase()}</strong></div><div class=\\'detail-row\\'><span>🔮 PREDIKSI RISIKO</span><strong>${p.predRisk}%</strong></div><div class=\\'detail-row\\'><span>🏙️ KABUPATEN/KOTA</span><strong>${p.cities.length} wilayah</strong></div>')"><span style="width:38px; font-weight:800; color:#2b6e4e;">${idx+1}</span><span style="flex:2; font-weight:600;">${p.name}</span><span style="color:#3d9b6d; font-weight:800;">${p.totalEvents}</span><span><span class="status-dot ${p.status === 'darurat' ? 'dot-red' : (p.status === 'waspada' ? 'dot-yellow' : 'dot-green')}"></span></span></div>`).join('')}`; }
+function renderNews(){ document.getElementById('newsGrid').innerHTML = beritaList.map(b => `<div class="news-card" onclick="showDetail('${b.title}', '<div><strong>📍 ${b.location}</strong> | 📅 ${b.date}</div><div style=\\'margin:14px 0\\'>${b.full}</div><div class=\\'sub-detail-card\\' style=\\'background:rgba(200,80,60,0.1)\\'>⚠️ <strong>INSTRUKSI DARURAT:</strong><br>${b.action}</div>')"><div class="news-header"><div class="news-title"><i class="fas ${b.icon}"></i> ${b.title} <span class="news-badge">${b.severity.toUpperCase()}</span></div><div style="font-size:0.6rem; opacity:0.7;"><i class="fas fa-map-marker-alt"></i> ${b.location}</div></div><div style="padding:18px;"><div style="font-size:0.75rem; font-weight:500;">${b.short}</div><div style="font-size:0.55rem; margin-top:10px; opacity:0.6;">${b.date}</div></div></div>`).join(''); }
+function renderProvinces(filter=""){ const container=document.getElementById('provinceGrid'); container.innerHTML=''; const filtered=allProvinces.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())); filtered.forEach(prov=>{ let badgeClass=prov.status==='darurat'?'badge-darurat':'badge-siaga'; let dotClass = prov.status==='darurat'?'dot-red':(prov.status==='waspada'?'dot-yellow':'dot-green'); let div=document.createElement('div'); div.className='province-card'; div.onclick=()=>showProvinceCities(prov); div.innerHTML=`<div><div class="province-name">${prov.name}</div><div class="province-stats">🏢 ${prov.evacPoints} titik | 👥 ${(prov.refugees/1000).toFixed(0)}k pengungsi | 🏙️ ${prov.cities.length} Kab/Kota</div></div><div style="display:flex; align-items:center; gap:10px;"><span class="status-dot ${dotClass}"></span><div class="province-badge ${badgeClass}">${prov.status==='darurat'?'🔴':'🟡'}</div></div>`; container.appendChild(div); }); }
+function showProvinceCities(prov){ 
+    document.getElementById('selectedProvinceName').innerHTML = `<i class="fas fa-city"></i> ${prov.name} - ${prov.cities.length} Kab/Kota | ${prov.evacPoints} titik evakuasi | ${(prov.refugees/1000).toFixed(0)}k pengungsi`; 
+    const grid = document.getElementById('citiesGrid'); 
+    grid.innerHTML = `<div class="detail-card" style="margin-bottom:20px; grid-column:1/-1;"><div class="detail-row"><span>📊 TOTAL KEJADIAN 2026</span><strong>${prov.totalEvents} kejadian</strong></div><div class="detail-row"><span>⚠️ STATUS</span><strong style="color:#e07a5f">${prov.status.toUpperCase()}</strong></div><div class="detail-row"><span>🏢 TITIK EVAKUASI</span><strong>${prov.evacPoints} titik</strong></div><div class="detail-row"><span>👥 PENGUNGSI</span><strong>${prov.refugees.toLocaleString()} jiwa</strong></div><div class="detail-row"><span>💀 KORBAN MENINGGAL</span><strong>${prov.deaths} jiwa</strong></div><div class="detail-row"><span>🏥 KORBAN LUKA</span><strong>${prov.injured} jiwa</strong></div><div class="detail-row"><span>🔮 PREDIKSI RISIKO</span><strong>${prov.predRisk}% kemungkinan</strong></div></div>`; 
+    prov.cities.forEach(city => { 
+        let cityDiv = document.createElement('div'); 
+        cityDiv.className = 'city-card'; 
+        cityDiv.onclick = () => showDetail(`📍 ${city}, ${prov.name}`, `<div class="detail-row"><span>🏙️ KOTA/KABUPATEN</span><strong>${city}</strong></div><div class="detail-row"><span>📍 PROVINSI</span><strong>${prov.name}</strong></div><div class="detail-row"><span>⚠️ STATUS</span><strong style="color:#e07a5f">${prov.status.toUpperCase()}</strong></div><div class="detail-row"><span>📞 KONTAK DARURAT</span><strong>112 (pusat) / BPBD ${prov.name}</strong></div><div class="sub-detail-card" style="margin-top:14px"><strong>⚠️ TINDAKAN YANG HARUS DILAKUKAN:</strong><br>${prov.status === 'darurat' ? '🔴 SEGERA EVAKUASI! Ikuti arahan BPBD setempat! Matikan aliran listrik dan gas! Cari tempat tinggi! Bawa dokumen penting dan obat-obatan!' : '🟠 TETAP WASPADA! Siapkan tas siaga berisi dokumen penting, obat-obatan, air minum, dan makanan kering! Pantau info BMKG dan BPBD terkini!'}</div>`); 
+        cityDiv.innerHTML = `<span class="city-name"><i class="fas fa-map-pin"></i> ${city}</span><span class="${prov.status === 'darurat' ? 'badge-darurat' : 'badge-siaga'}" style="padding:4px 12px; border-radius:30px; font-size:0.65rem; font-weight:600;">${prov.status === 'darurat' ? '🔴 DARURAT' : '🟡 SIAGA'}</span>`; 
+        grid.appendChild(cityDiv); 
+    }); 
+    document.getElementById('citiesPanel').classList.add('active'); 
+}
+function closeCitiesPanel(){ document.getElementById('citiesPanel').classList.remove('active'); }
+function filterProvinces(){ renderProvinces(document.getElementById('searchProvince').value); }
+function showDetail(title, content){ document.getElementById('modalTitle').innerHTML = title; document.getElementById('modalBody').innerHTML = `<div class="detail-card">${content}</div><button class="btn-modal" onclick="closeModal()">Tutup</button>`; document.getElementById('detailModal').style.display = 'flex'; }
+function closeModal(){ document.getElementById('detailModal').style.display = 'none'; }
+function showToast(msg){ const t=document.createElement('div'); t.className='toast'; t.innerHTML=`<i class="fas fa-bell"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
+
+// CHATBOT SUPER LENGKAP - Bisa jawab SEMUA pertanyaan bencana
+function sendMessage(){ 
+    const input=document.getElementById('chatInput'); 
+    const msg=input.value.trim().toLowerCase(); 
+    if(!msg) return; 
+    const chatDiv=document.getElementById('chatMessages'); 
+    chatDiv.innerHTML+=`<div class="message user-message">${input.value.trim()}</div>`; 
+    input.value=''; 
+    setTimeout(()=>{ 
+        let reply = "Maaf, saya kurang paham. Coba tanyakan: banjir, gempa, tsunami, longsor, gunung meletus, kebakaran, angin puting beliung, kekeringan, cuaca ekstrem, evakuasi, tas siaga, nomor darurat, mitigasi bencana, atau provinsi tertinggi.";
+        
+        const resp = {
+            // Bencana alam
+            "banjir": "💧 BANJIR: 1.204 kejadian (37.1%). Provinsi tertinggi: Jawa Barat (312), Jawa Timur (278).\n\n⚠️ TINDAKAN:\n1. Evakuasi ke tempat tinggi\n2. Matikan listrik dan gas\n3. Bawa dokumen penting\n4. Hindari arus air banjir",
+            "gempa": "🌍 GEMPA: 712 kejadian. Magnitudo tertinggi M6,2.\n\n⚠️ TINDAKAN:\n1. DROP, COVER, HOLD ON!\n2. Lindungi kepala\n3. Jauhi jendela dan rak\n4. Waspada gempa susulan",
+            "longsor": "⛰️ LONGSOR: 589 kejadian. Tertinggi di Jawa Tengah (178).\n\n⚠️ TINDAKAN:\n1. Lari ke SAMPING, hindari lembah\n2. Waspada saat hujan deras\n3. Jangan tinggal di tebing curam",
+            "tsunami": "🌊 TSUNAMI:\n\n⚠️ TINDAKAN:\n1. LARI ke tempat tinggi minimal 30 meter!\n2. Jangan menunggu peringatan\n3. Jika gempa kuat dan lama, segera evakuasi",
+            "gunung meletus": "🌋 GUNUNG MELETUS:\n\n⚠️ TINDAKAN:\n1. Jauhi radius bahaya (8-10km)\n2. Gunakan masker N95\n3. Lindungi mata dan kulit\n4. Waspada lahar dingin saat hujan",
+            "gunung berapi": "🌋 GUNUNG MELETUS:\n\n⚠️ TINDAKAN:\n1. Jauhi radius bahaya (8-10km)\n2. Gunakan masker N95\n3. Lindungi mata dan kulit\n4. Waspada lahar dingin saat hujan",
+            "kebakaran": "🔥 KEBAKARAN HUTAN/LAHAN:\n\n⚠️ TINDAKAN:\n1. Hubungi 113 segera\n2. Tutup pintu dan jendela\n3. Gunakan kain basah untuk bernapas\n4. Jangan gunakan lift",
+            "kebakaran hutan": "🔥 KARHUTLA: 312 kejadian. Tertinggi di Riau (98).\n\n⚠️ Gunakan masker N95, tutup ventilasi, kurangi aktivitas luar.",
+            "angin puting beliung": "💨 ANGIN PUTING BELIUNG:\n\n⚠️ TINDAKAN:\n1. Cari shelter kokoh\n2. Jauhi pohon besar\n3. Jauhi papan reklame\n4. Berlindung di ruang bawah tanah",
+            "kekeringan": "🏜️ KEKERINGAN:\n\n⚠️ TINDAKAN:\n1. Hemat penggunaan air\n2. Siapkan cadangan air bersih\n3. Jangan membakar sampah sembarangan",
+            "cuaca ekstrem": "⛈️ CUACA EKSTREM: 430 kejadian.\n\n⚠️ TINDAKAN:\n1. Tetap di dalam rumah\n2. Jauhi pohon dan tiang listrik\n3. Cabut peralatan elektronik",
+            
+            // Persiapan dan evakuasi
+            "tas siaga": "🎒 TAS SIAGA BENCANA:\n\n📋 ISI TAS SIAGA:\n• Dokumen penting (KTP, KK, ijazah)\n• Obat-obatan pribadi\n• Air minum 3 liter\n• Makanan kering (biskuit, energy bar)\n• Senter + baterai cadangan\n• Power bank\n• Masker N95\n• Uang tunai\n• P3K (perban, betadine, plester)\n• Peluit\n• Pakaian cadangan\n• Jas hujan",
+            "evakuasi": "🚨 PROSEDUR EVAKUASI:\n\n1. Tetap tenang dan jangan panik\n2. Ikuti arahan petugas BPBD\n3. Gunakan jalur evakuasi yang sudah ditentukan\n4. Bantu lansia, disabilitas, anak-anak\n5. Jangan gunakan lift\n6. Kumpul di titik kumpul yang aman\n7. Bawa tas siaga",
+            "mitigasi": "🛡️ MITIGASI BENCANA:\n\n1. Kenali risiko bencana di daerah Anda\n2. Buat peta evakuasi keluarga\n3. Siapkan tas siaga\n4. Ikuti pelatihan dasar tanggap darurat\n5. Pantau peringatan dini BMKG & BNPB\n6. Sosialisasi ke tetangga\n7. Perkuat struktur rumah",
+            "peringatan dini": "🚨 PERINGATAN DINI:\n\n📱 Sumber informasi:\n• BMKG: gempa, tsunami, cuaca\n• BNPB: bencana nasional\n• BPBD: bencana daerah\n• Info Bencana via SMS Broadcast\n\n⚠️ Jangan sebarkan hoax!",
+            
+            // Nomor darurat
+            "nomor darurat": "📞 NOMOR DARURAT INDONESIA:\n\n• 112 - Pusat Darurat (Polisi, Ambulans, Pemadam, SAR, BNPB) GRATIS\n• 118 / 119 - Ambulans & Gawat Darurat Medis\n• 113 - Pemadam Kebakaran\n• 115 - SAR (Search and Rescue)\n• (021) 3522911 - BNPB Pusat",
+            
+            // Statistik
+            "provinsi tertinggi": "🏆 TOP 3 PROVINSI KEJADIAN TERTINGGI 2026:\n\n1. Jawa Barat: 589 kejadian,\n2. Jawa Timur: 534 kejadian,\n3. Jawa Tengah: 456 kejadian",
+            "statistik": "📊 STATISTIK BENCANA 2026:\n\n• Total kejadian: 3.247\n• Banjir: 1.204 (37.1%)\n• Gempa: 712 (21.9%)\n• Longsor: 589 (18.1%)\n• Cuaca ekstrem: 430 (13.3%)\n• Karhutla: 312 (9.6%)"
+        };
+        
+        // Cari jawaban yang cocok
+        for(const [k, v] of Object.entries(resp)) {
+            if(msg.includes(k)) { reply = v; break; }
+        }
+        
+        // Salam dan interaksi sosial
+        if(msg.includes("halo")||msg.includes("hai")||msg.includes("hey")) reply = "👋 Halo! Saya INA-BOT, asisten bencana Indonesia. Ada yang bisa saya bantu? Tanyakan tentang banjir, gempa, tsunami, longsor, evakuasi, atau tas siaga!";
+        if(msg.includes("terima kasih")||msg.includes("makasih")||msg.includes("thank")) reply = "🙏 Sama-sama! Tetap waspada dan utamakan keselamatan. Jangan ragu bertanya lagi!";
+        if(msg.includes("panduan")||msg.includes("aksi")||msg.includes("cara")) reply = "📖 PANDUAN TANGGAP DARURAT:\n\n1. SIAPKAN tas siaga\n2. KENALI jalur evakuasi terdekat\n3. IKUTI arahan petugas\n4. JANGAN panik\n5. SEBAR info yang benar (jangan hoax)\n\nAda pertanyaan spesifik tentang jenis bencana tertentu?";
+        if(msg.includes("apa itu")) {
+            if(msg.includes("mitigasi")) reply = resp["mitigasi"];
+            else if(msg.includes("tsunami")) reply = resp["tsunami"];
+            else if(msg.includes("banjir")) reply = resp["banjir"];
+            else reply = "❓ Coba lebih spesifik ya. Contoh: 'apa itu mitigasi?', 'apa itu tsunami?', 'apa itu banjir bandang?'";
+        }
+        
+        chatDiv.innerHTML+=`<div class="message bot-message">${reply}</div>`;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }, 300); 
+}
+
+function sendQuick(q){ document.getElementById('chatInput').value=q; sendMessage(); }
+
+// Quick questions - lebih lengkap
+document.getElementById('quickQuestions').innerHTML = [
+    'Banjir', 'Gempa', 'Tsunami', 'Longsor', 'Gunung Meletus', 
+    'Kebakaran', 'Angin Puting', 'Kekeringan', 'Tas Siaga', 
+    'Evakuasi', 'Nomor Darurat', 'Mitigasi', 'Provinsi Tertinggi', 'Statistik'
+].map(q=>`<span class="quick-q" onclick="sendQuick('${q}')">${q}</span>`).join('');
+
+// Chatbot toggle - FIX: menggunakan classList.toggle dengan style yang sudah ada
+document.getElementById('chatbotBtn').onclick = () => {
+    const win = document.getElementById('chatbotWindow');
+    win.classList.toggle('active');
+};
+document.getElementById('chatClose').onclick = () => {
+    document.getElementById('chatbotWindow').classList.remove('active');
+};
+
+document.getElementById('contactGrid').innerHTML = `<div class="contact-card" onclick="showDetail('📞 PUSAT DARURAT 112', '<div class=\\'detail-row\\'><span>📞 NOMOR</span><strong>112</strong></div><div class=\\'detail-row\\'><span>🕐 LAYANAN</span><strong>24 Jam</strong></div><div>Polisi, Ambulans, Pemadam, SAR, BNPB - GRATIS</div>')"><i class="fas fa-phone-volume"></i><div class="contact-number">112</div><div>Pusat Darurat</div></div><div class="contact-card" onclick="showDetail('BNPB PUSAT', '<div class=\\'detail-row\\'><span>📞 TELEPON</span><strong>(021) 3522911</strong></div><div class=\\'detail-row\\'><span>🌐 WEBSITE</span><strong>www.bnpb.go.id</strong></div><div>Hotline 24 jam kebencanaan nasional</div>')"><i class="fas fa-tree"></i><div class="contact-number">BNPB</div><div>021-3522911</div></div><div class="contact-card" onclick="showDetail('AMBULANS & MEDIS', '<div class=\\'detail-row\\'><span>📞 NOMOR</span><strong>118 / 119</strong></div><div class=\\'detail-row\\'><span>🕐 LAYANAN</span><strong>24 Jam</strong></div><div>Gawat Darurat Medis & Ambulans</div>')"><i class="fas fa-ambulance"></i><div class="contact-number">118/119</div><div>Ambulans</div></div><div class="contact-card" onclick="showDetail('PEMADAM KEBAKARAN', '<div class=\\'detail-row\\'><span>📞 NOMOR</span><strong>113</strong></div><div class=\\'detail-row\\'><span>🕐 LAYANAN</span><strong>24 Jam</strong></div><div>Kebakaran & Penyelamatan</div>')"><i class="fas fa-fire-extinguisher"></i><div class="contact-number">113</div><div>Pemadam</div></div><div class="contact-card" onclick="showDetail('BPBD DAERAH', '<div class=\\'detail-row\\'><span>📞 HUBUNGI</span><strong>112</strong></div><div>Akan diteruskan ke BPBD setempat sesuai lokasi Anda</div>')"><i class="fas fa-water"></i><div class="contact-number">BPBD</div><div>Bencana Daerah</div></div>`;
+document.getElementById('lastUpdate').innerHTML = new Date().toLocaleString('id-ID');
+renderStats(); renderBreakdown(); renderLeaderboard(); renderNews(); renderProvinces();
+</script>
+</body>
+</html>
